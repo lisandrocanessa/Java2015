@@ -23,6 +23,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class ABMPersona extends JFrame {
+	
+	ControladorPersona cp=new ControladorPersona();
 
 	private JPanel contentPane;
 	private JTextField txtDni;
@@ -81,17 +83,7 @@ public class ABMPersona extends JFrame {
 		btnBuscar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				//HACER UN METODO PARA REDUCIR EL CODIGO
-				ControladorPersona cp=new ControladorPersona();
-				Persona p;
-				p=cp.buscarPersona(Integer.parseInt(txtDni.getText()));
-				if (p != null){
-					txtNombre.setText(p.getNombre());
-					txtApellido.setText(p.getApellido());
-					txtEmail.setText(p.getEmail());
-				}
-				else
-					JOptionPane.showMessageDialog(null, "No existe Persona");
+				buscar();
 			}
 		});
 		
@@ -104,14 +96,10 @@ public class ABMPersona extends JFrame {
 		btnGuardar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				ControladorPersona cp=new ControladorPersona();
-				Persona p=new Persona();
-				p.setDni(Integer.parseInt(txtDni.getText())); // VALIDAR DNI!
-				p.setNombre(txtNombre.getText());
-				p.setApellido(txtApellido.getText());
-				p.setEmail(txtEmail.getText());
-				cp.guardarPersona(p);
+				guardar();
 			}
+
+			
 		});
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
@@ -178,4 +166,52 @@ public class ABMPersona extends JFrame {
 		);
 		contentPane.setLayout(gl_contentPane);
 	}
+	
+	private void guardar() {
+		if (validarCampos()){
+			Persona p=new Persona();
+			p.setDni(Integer.parseInt(txtDni.getText()));
+			p.setNombre(txtNombre.getText());
+			p.setApellido(txtApellido.getText());
+			p.setEmail(txtEmail.getText());
+			if (validarDni())
+				cp.guardarPersona(p);
+		}
+	}
+	
+	private boolean validarCampos() {
+		if (txtDni.getText()=="" || txtNombre.getText()=="" || txtApellido.getText()=="" || txtEmail.getText()==""){
+			JOptionPane.showMessageDialog(null, "Existen campos incompletos");
+			return false;
+		}
+		else 
+			return true;
+		
+	}
+	
+	private boolean validarDni() {
+		if(cp.buscarPersona(Integer.parseInt(txtDni.getText()))!=null){
+			return JOptionPane.showConfirmDialog(null, "¿Desea modificar al usuario?")==1; //VER CUANDO RESPONDE QUE SI!!
+		}
+		else
+			return true;
+		
+	}
+
+	private void buscar() {
+		ControladorPersona cp=new ControladorPersona();
+		Persona p;
+		p=cp.buscarPersona(Integer.parseInt(txtDni.getText()));
+		if (p != null){
+			txtNombre.setText(p.getNombre());
+			txtApellido.setText(p.getApellido());
+			txtEmail.setText(p.getEmail());
+		}
+		else
+			JOptionPane.showMessageDialog(null, "No existe Persona");
+	}
+	
+	
+	
+	
 }
