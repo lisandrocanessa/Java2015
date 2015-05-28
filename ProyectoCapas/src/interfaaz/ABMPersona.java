@@ -176,12 +176,13 @@ public class ABMPersona extends JFrame {
 			p.setNombre(txtNombre.getText());
 			p.setApellido(txtApellido.getText());
 			p.setEmail(txtEmail.getText());
-			if (validarDni()==3){
+			int bandera=validarDni();
+			if (bandera==3){
 				cp.guardarPersona(p);
 				JOptionPane.showMessageDialog(null, "Guardado Exitosamente!");
 				borrar();
 			}
-			else if (validarDni()==1) {
+			if (bandera==1) {
 				cp.modificarPersona(p);
 				JOptionPane.showMessageDialog(null, "Persona Modificada Exitosamente!");
 				borrar();
@@ -209,7 +210,7 @@ public class ABMPersona extends JFrame {
 	
 	private int validarDni() {
 		if(cp.buscarPersona(Integer.parseInt(txtDni.getText()))!=null){
-			int dialogResult=JOptionPane.showConfirmDialog(null, "¿Desea modificar al usuario?"); //VER CUANDO RESPONDE QUE SI!!
+			int dialogResult=JOptionPane.showConfirmDialog(null, "¿Desea modificar al usuario?");
 			if(dialogResult == JOptionPane.YES_OPTION){ 
 				return 1;
 			}
