@@ -20,6 +20,9 @@ public class ControladorPersona {
 	public void modificarPersona(Persona p){
 		cp.modifyPersona(p);
 	}
+	public void borrarPersona(Persona p){
+		cp.deletePersona(p);
+	}
 }
 
 
