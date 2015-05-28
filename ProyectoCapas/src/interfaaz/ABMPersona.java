@@ -1,6 +1,5 @@
 package interfaaz;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -17,13 +16,16 @@ import javax.swing.JButton;
 import entidades.Persona;
 import negocio.ControladorPersona;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class ABMPersona extends JFrame {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	ControladorPersona cp=new ControladorPersona();
 
 	private JPanel contentPane;
@@ -174,11 +176,27 @@ public class ABMPersona extends JFrame {
 			p.setNombre(txtNombre.getText());
 			p.setApellido(txtApellido.getText());
 			p.setEmail(txtEmail.getText());
-			if (validarDni())
+			if (validarDni()==3){
 				cp.guardarPersona(p);
+				JOptionPane.showMessageDialog(null, "Guardado Exitosamente!");
+				borrar();
+			}
+			else if (validarDni()==1) {
+				cp.modificarPersona(p);
+				JOptionPane.showMessageDialog(null, "Persona Modificada Exitosamente!");
+				borrar();
+			}
 		}
 	}
 	
+	private void borrar() {
+		txtDni.setText("");
+		txtNombre.setText("");
+		txtEmail.setText("");
+		txtApellido.setText("");
+		
+	}
+
 	private boolean validarCampos() {
 		if (txtDni.getText()=="" || txtNombre.getText()=="" || txtApellido.getText()=="" || txtEmail.getText()==""){
 			JOptionPane.showMessageDialog(null, "Existen campos incompletos");
@@ -189,12 +207,18 @@ public class ABMPersona extends JFrame {
 		
 	}
 	
-	private boolean validarDni() {
+	private int validarDni() {
 		if(cp.buscarPersona(Integer.parseInt(txtDni.getText()))!=null){
-			return JOptionPane.showConfirmDialog(null, "¿Desea modificar al usuario?")==1; //VER CUANDO RESPONDE QUE SI!!
+			int dialogResult=JOptionPane.showConfirmDialog(null, "¿Desea modificar al usuario?"); //VER CUANDO RESPONDE QUE SI!!
+			if(dialogResult == JOptionPane.YES_OPTION){ 
+				return 1;
+			}
+			else
+				return 2;
+			
 		}
 		else
-			return true;
+			return 3;
 		
 	}
 

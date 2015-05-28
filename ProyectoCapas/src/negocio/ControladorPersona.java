@@ -17,6 +17,9 @@ public class ControladorPersona {
 	public void guardarPersona(Persona p){
 		cp.addPersona(p);
 	}
+	public void modificarPersona(Persona p){
+		cp.modifyPersona(p);
+	}
 }
 
 
