@@ -33,9 +33,9 @@ public class CatalogoPersonas {
 		}
 	}
 	public void deletePersona(Persona p){
-		for (Persona p1 : personas) {
-			if (p1.getDni()==p.getDni()){
-				personas.remove(p1);
+		for (int i = 0; i < personas.size(); i++) {
+			if (personas.get(i).getDni()==p.getDni()){
+				personas.remove(i);
 			}
 		}
 	}
