@@ -207,17 +207,19 @@ public class ABMPersona extends JFrame {
 				p.setNombre(txtNombre.getText());
 				p.setApellido(txtApellido.getText());
 				p.setEmail(txtEmail.getText());
-				int bandera=validarDni();
-				if (bandera==3){
+				boolean flag = cp.validarExistencia(Integer.parseInt(txtDni.getText()));
+				if (flag){
+					if(JOptionPane.showConfirmDialog(null, "La persona ingresada ya existe.\n Desea modificarla?")==JOptionPane.YES_OPTION){
+						cp.modificarPersona(p);
+						borrarCampos();
+						JOptionPane.showMessageDialog(null, "La persona ha sido modificada.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
+				else{
 					cp.guardarPersona(p);
-					JOptionPane.showMessageDialog(null, "Guardado Exitosamente!","Aviso", JOptionPane.INFORMATION_MESSAGE);
 					borrarCampos();
-				}
-				if (bandera==1) {
-					cp.modificarPersona(p);
-					JOptionPane.showMessageDialog(null, "Persona Modificada Exitosamente!");
-					borrarCampos();
-				}
+					JOptionPane.showMessageDialog(null, "La persona ha sido registrada","Aviso",JOptionPane.INFORMATION_MESSAGE);
+				}					
 			}
 		}
 		catch(NumberFormatException nfe){
@@ -239,24 +241,8 @@ public class ABMPersona extends JFrame {
 			return false;
 		}
 		else 
-			return true;
-		
-	}
-	
-	private int validarDni() {
-		if(cp.buscarPersona(Integer.parseInt(txtDni.getText()))!=null){
-			int dialogResult=JOptionPane.showConfirmDialog(null, "El Usuario ya Existe\n¿Desea modificarlo?");
-			if(dialogResult == JOptionPane.YES_OPTION){ 
-				return 1;
-			}
-			else
-				return 2;
-			
-		}
-		else
-			return 3;
-		
-	}
+			return true;		
+	}	
 
 	private void buscar() {
 		ControladorPersona cp=new ControladorPersona();
@@ -273,18 +259,15 @@ public class ABMPersona extends JFrame {
 	
 	private void borrar(){
 		if(validarCampos()){
-			Persona p;
-			p=cp.buscarPersona(Integer.parseInt(txtDni.getText()));
-			if(p!=null){
+			if(cp.borrarPersona(Integer.parseInt(txtDni.getText()))){
 				int respuesta = JOptionPane.showConfirmDialog(null, "¿Está seguro?");
-				if( respuesta == JOptionPane.YES_OPTION){
-					cp.borrarPersona(p);
+				if(respuesta == JOptionPane.YES_OPTION){
 					borrarCampos();
-					JOptionPane.showMessageDialog(null, "Persona borrada","Aviso",JOptionPane.DEFAULT_OPTION);
+					JOptionPane.showMessageDialog(null, "Persona borrada","Aviso",JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 			else
-				JOptionPane.showMessageDialog(null, "No existe Persona para borrar","Error",JOptionPane.ERROR_MESSAGE);
-		}		
+				JOptionPane.showMessageDialog(null, "No existe Persona para borrar","Error",JOptionPane.ERROR_MESSAGE);			
+		}
 	}	
 }

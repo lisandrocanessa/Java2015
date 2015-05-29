@@ -6,7 +6,9 @@ import java.util.List;
 import entidades.Persona;
 
 public class CatalogoPersonas {
+	
 	private static ArrayList<Persona> personas=new ArrayList<Persona>();
+	
 	public CatalogoPersonas(){
 		Persona p=new Persona();
 	}

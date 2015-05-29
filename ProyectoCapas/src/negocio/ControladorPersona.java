@@ -1,5 +1,6 @@
 package negocio;
 
+
 import data.CatalogoPersonas;
 import entidades.Persona;
 
@@ -20,8 +21,22 @@ public class ControladorPersona {
 	public void modificarPersona(Persona p){
 		cp.modifyPersona(p);
 	}
-	public void borrarPersona(Persona p){
-		cp.deletePersona(p);
+	public boolean borrarPersona(int dni){
+		Persona p;
+		if (validarExistencia(dni)) {
+			p = cp.getByDni(dni);
+			cp.deletePersona(p);
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	public boolean validarExistencia(int dni) {
+		if(buscarPersona(dni)!=null)
+				return true;
+		else
+			return false;		
 	}
 }
 
