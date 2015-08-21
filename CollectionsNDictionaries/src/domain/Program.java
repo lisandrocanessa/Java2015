@@ -8,6 +8,7 @@ public class Program {
 		// TODO Auto-generated method stub
 		HashMap<Cochera, Auto> reservas = new HashMap<Cochera, Auto>();
 		
+		
 		//Cochera c = new Cochera('c',5);
 		
 		reservas.put(new Cochera('a',1), new Auto("1"));
