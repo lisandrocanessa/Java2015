@@ -2,17 +2,30 @@ package entidades;
 
 public class Reina extends Ficha {
 
-	@Override
-	public boolean validarMovimiento() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
 	public void posicionInicial(int posX) {
 		this.setPosX(posX);
 		this.setPosY(1);
 		
+	}
+
+	@Override
+	public boolean validarMovimiento(int posXMov, int posYMov) {
+		for (int i = 1; i < 8; i++) {
+			if((this.getPosX()+i==posXMov && this.getPosY()==posYMov) || (this.getPosX()+i==posXMov && this.getPosY()+i==posYMov) || 
+					(this.getPosX()==posXMov && this.getPosY()+i==posYMov) || (this.getPosX()-i==posXMov && this.getPosY()+i==posYMov) || 
+					(this.getPosX()-i==posXMov && this.getPosY()==posYMov) || (this.getPosX()-i==posXMov && this.getPosY()-i==posYMov) ||
+					(this.getPosX()==posXMov && this.getPosY()-i==posYMov) || (this.getPosX()+i==posXMov && this.getPosY()-i==posYMov))
+				return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean hayFichaEnemiga(int posXMov, int posYMov) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
