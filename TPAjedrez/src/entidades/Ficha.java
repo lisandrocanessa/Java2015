@@ -25,7 +25,8 @@ public abstract class Ficha {
 		this.dni = dni;
 	}
 	
-	public abstract boolean validarMovimiento();
+	public abstract boolean validarMovimiento(int posXMov,int posYMov);
+	
 	public int getPosX() {
 		return posX;
 	}
@@ -39,5 +40,7 @@ public abstract class Ficha {
 		this.posY = posY;
 	}
 	public abstract void posicionInicial(int posX);
+	
+	public abstract boolean hayFichaEnemiga(int posXMov, int posYMov);
 	
 }
