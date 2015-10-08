@@ -8,6 +8,7 @@ public abstract class Ficha {
 	private int dni;
 	private int posX;
 	private int posY;
+	private int nroPartida;
 	
 	// getters & setters
 	public String getNombre() {
@@ -47,6 +48,12 @@ public abstract class Ficha {
 	public abstract boolean hayFichaEnemiga(int posXMov, int posYMov);
 	
 	public abstract boolean validarMovimiento(int posXMov,int posYMov);
+	public int getNroPartida() {
+		return nroPartida;
+	}
+	public void setNroPartida(int nroPartida) {
+		this.nroPartida = nroPartida;
+	}
 
 	
 }

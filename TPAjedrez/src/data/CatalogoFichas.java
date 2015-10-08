@@ -143,4 +143,24 @@ public class CatalogoFichas {
 			return tablero;
 		}
 
+		public void guardarFicha(Ficha f) throws ClassNotFoundException, SQLException {
+			// TODO Auto-generated method stub
+			PreparedStatement ps = FactoriaConexiones.getInstancia().getConn().prepareStatement(
+					"insert into fichas(nropartida,dni,nombre,posx,posy,estado) values (?,?,?,?,?,?)");
+			ps.setInt(1, f.getNroPartida());
+			ps.setInt(2, f.getDni());
+			ps.setString(3, f.getNombre());
+			ps.setInt(4, f.getPosX());
+			ps.setInt(5, f.getPosY());
+			if (f.isEstado()){
+				ps.setInt(6, 1);
+			}
+			else {
+				ps.setInt(6, 0);
+			}
+			ps.execute();
+			ps.close();
+			FactoriaConexiones.getInstancia().releaseConn();
+		}
+
 }
