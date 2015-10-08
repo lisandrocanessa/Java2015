@@ -2,8 +2,8 @@ package entidades;
 
 public abstract class Ficha {
 	private String nombre;
-	// estado = true >> la ficha esta en juego
-	// estado = false >> la ficha fue comida
+	// estado = true >> la ficha esta en juego == 1
+	// estado = false >> la ficha fue comida == 0
 	private boolean estado;
 	private int dni;
 	private int posX;
@@ -42,7 +42,7 @@ public abstract class Ficha {
 	}
 	
 	
-	public abstract void posicionInicial(int posX);
+	public abstract void posicionInicial(int posX, int posY);
 	
 	public abstract boolean hayFichaEnemiga(int posXMov, int posYMov);
 	

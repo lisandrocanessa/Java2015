@@ -17,6 +17,8 @@ import entidades.Jugador;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Registro extends JFrame {
 
@@ -84,6 +86,10 @@ public class Registro extends JFrame {
 		txtNombre.setText("");
 		
 		JButton btnAceptar = new JButton("Aceptar");
+		btnAceptar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
 		btnAceptar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -110,6 +116,7 @@ public class Registro extends JFrame {
 			try {
 				Jugador j = cl.buscarJugador(Integer.parseInt(this.txtDni.getText()));
 				if (j==null){
+					j = new Jugador();
 					j.setDni(Integer.parseInt(this.txtDni.getText()));
 					j.setNombre(this.txtNombre.getText());
 					j.setApellido(this.txtApellido.getText());

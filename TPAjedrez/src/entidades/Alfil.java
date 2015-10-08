@@ -4,9 +4,9 @@ public class Alfil extends Ficha {
 
 	// setea posicion inicial
 	@Override
-	public void posicionInicial(int posX) {
+	public void posicionInicial(int posX, int posY) {
 		this.setPosX(posX);
-		this.setPosY(1);
+		this.setPosY(posY);
 	}
 
 	@Override

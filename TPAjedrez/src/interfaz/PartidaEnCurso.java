@@ -22,6 +22,11 @@ import entidades.Partida;
 import javax.swing.JTextArea;
 
 import negocio.ControladorPartida;
+import javax.swing.DefaultComboBoxModel;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class PartidaEnCurso extends JFrame {
 
@@ -32,27 +37,33 @@ public class PartidaEnCurso extends JFrame {
 	private JLabel lblJugadorUno;
 	private JLabel lblJugadorDos;
 	private JLabel lblJugadorTurno;
-
+	private JComboBox cmbFicha;
+	private JComboBox cmbPosX, cmbPosY;
+	
+	
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					PartidaEnCurso frame = new PartidaEnCurso();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
+	
+	
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					PartidaEnCurso frame = new PartidaEnCurso();
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the frame.
 	 */
-	public PartidaEnCurso() {
+	public PartidaEnCurso(Partida p) {
 		setResizable(false);
 		setTitle("PARTIDA");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -82,6 +93,9 @@ public class PartidaEnCurso extends JFrame {
 		contentPane.add(scrTablero);
 		
 		txtJugadorUno = new JTextArea();
+		txtJugadorUno.setEnabled(false);
+		txtJugadorUno.setRows(16);
+		txtJugadorUno.setLineWrap(true);
 		scrTablero.setViewportView(txtJugadorUno);
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -89,6 +103,8 @@ public class PartidaEnCurso extends JFrame {
 		contentPane.add(scrollPane);
 		
 		txtJugadorDos = new JTextArea();
+		txtJugadorDos.setEnabled(false);
+		txtJugadorDos.setRows(16);
 		scrollPane.setViewportView(txtJugadorDos);
 		
 		JLabel lblTurnoDe = new JLabel("Turno de:");
@@ -101,27 +117,51 @@ public class PartidaEnCurso extends JFrame {
 		lblJugadorTurno.setBounds(263, 305, 104, 14);
 		contentPane.add(lblJugadorTurno);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(118, 337, 114, 20);
-		contentPane.add(comboBox);
+		cmbFicha = new JComboBox();
+		cmbFicha.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+			}
+		});
+		cmbFicha.setBounds(118, 337, 114, 20);
+		contentPane.add(cmbFicha);
 		
 		JLabel lblFicha = new JLabel("Ficha:");
 		lblFicha.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lblFicha.setBounds(70, 339, 38, 14);
 		contentPane.add(lblFicha);
 		
-		JLabel lblMoverA = new JLabel("Mover a:");
-		lblMoverA.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblMoverA.setBounds(273, 339, 52, 14);
-		contentPane.add(lblMoverA);
-		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setBounds(342, 337, 83, 20);
-		contentPane.add(comboBox_1);
-		
 		JButton btnRealizarMovimiento = new JButton("REALIZAR MOVIMIENTO");
+		btnRealizarMovimiento.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				ControladorPartida cp = new ControladorPartida();
+				cp.realizarMovimiento(cmbFicha.getSelectedItem().toString(), cmbPosX.getSelectedIndex()+1, cmbPosY.getSelectedIndex()+1);
+			}
+		});
 		btnRealizarMovimiento.setBounds(203, 382, 149, 23);
 		contentPane.add(btnRealizarMovimiento);
+		
+		JComboBox cmbPosY = new JComboBox();
+		cmbPosY.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8"}));
+		cmbPosY.setBounds(365, 337, 37, 20);
+		contentPane.add(cmbPosY);
+		
+		JComboBox cmbPosX = new JComboBox();
+		cmbPosX.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8"}));
+		cmbPosX.setToolTipText("");
+		cmbPosX.setBounds(469, 337, 38, 20);
+		contentPane.add(cmbPosX);
+		
+		JLabel lblX = new JLabel("Fila:");
+		lblX.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblX.setBounds(329, 339, 38, 14);
+		contentPane.add(lblX);
+		
+		JLabel lblY = new JLabel("Columna:");
+		lblY.setBounds(412, 340, 47, 14);
+		contentPane.add(lblY);
+		this.partida = p;
+		iniciarPartida();
+		
 	}
 
 	public Partida getPartida() {
@@ -132,24 +172,17 @@ public class PartidaEnCurso extends JFrame {
 	}
 
 	// inicializa el tablero
-	public void iniciarPartida(Partida p) {
+	public void iniciarPartida() {
 		// TODO Auto-generated method stub
 		ControladorPartida cp = new ControladorPartida();
-		this.setPartida(p);
 		this.lblJugadorUno.setText(Integer.toString(this.getPartida().getJ1().getDni()));
 		this.lblJugadorDos.setText(Integer.toString(this.getPartida().getJ2().getDni()));
-		try {
-			this.partida.setTablero(cp.inicializarTablero(this.partida));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(null, "Ha ocurrido un problema!");
-		}
 		for (Ficha f : this.partida.getTablero()){
-			if (f.getDni()==this.partida.getJ1().getDni()){
-				this.txtJugadorUno.append(f.getNombre() + "  (" + f.getPosX() + "," + f.getPosY() + ")");
+			if (f.getDni()==this.partida.getJ1().getDni() && f.isEstado()){
+				this.txtJugadorUno.append("  "+f.getNombre() + "     (" + f.getPosX() + ",   " + f.getPosY() + ")"+"\n");
 			}
-			else {
-				this.txtJugadorDos.append(f.getNombre() + "  (" + f.getPosX() + "," + f.getPosY() + ")");
+			else if (f.getDni()==this.partida.getJ2().getDni() && f.isEstado()) {
+				this.txtJugadorDos.append("  "+f.getNombre() + "     (" + f.getPosX() + ",   " + f.getPosY() + ")"+"\n");
 			}
 		}
 		if (this.partida.getTurno()==1){
@@ -161,6 +194,4 @@ public class PartidaEnCurso extends JFrame {
 		
 		// falta llenar los combobox!!
 	}
-	
-
 }
