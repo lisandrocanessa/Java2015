@@ -11,6 +11,7 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 
 import entidades.Jugador;
+import negocio.ControladorLogin;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -105,17 +106,24 @@ public class Registro extends JFrame {
 	
 	private void registrarJugador() {
 		if (validarCampos()){
-			Jugador j = new Jugador();
-			j.setDni(Integer.parseInt(this.txtDni.getText()));
-			j.setNombre(this.txtNombre.getText());
-			j.setApellido(this.txtApellido.getText());
+			ControladorLogin cl = new ControladorLogin();
 			try {
-				j.guardarJugador();
+				Jugador j = cl.buscarJugador(Integer.parseInt(this.txtDni.getText()));
+				if (j==null){
+					j.setDni(Integer.parseInt(this.txtDni.getText()));
+					j.setNombre(this.txtNombre.getText());
+					j.setApellido(this.txtApellido.getText());
+					cl.guardarJugador(j);
+					JOptionPane.showMessageDialog(null, "El jugador ha sido registrado");
+					}
+				else {
+					JOptionPane.showMessageDialog(null, "El jugador ya existe");
+				}
 			} catch (ClassNotFoundException | SQLException e) {
 				// TODO Auto-generated catch block
 				JOptionPane.showMessageDialog(null, "El jugador no pudo registrarse.");
 			}
-			JOptionPane.showMessageDialog(null, "El jugador ha sido registrado");
+
 			
 		}
 		else {
@@ -128,7 +136,7 @@ public class Registro extends JFrame {
 //			return true;
 //		else                                 otra forma
 //			return false;
-		boolean rta = (!(this.txtApellido.getText().equals("") || this.txtDni.getText().equals("") || this.txtNombre.getText().equals("")));
+		boolean rta = (!this.txtApellido.getText().equals("") || !this.txtDni.getText().equals("") || !this.txtNombre.getText().equals(""));
 		return rta;
 	}
 

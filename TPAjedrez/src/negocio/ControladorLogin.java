@@ -14,4 +14,10 @@ public class ControladorLogin {
 		return j;
 	}
 
+	// guarda un nuevo jugador
+	public void guardarJugador(Jugador j) throws ClassNotFoundException, SQLException{
+		CatalogoJugadores cj = new CatalogoJugadores();
+		cj.guardarJugador(j);
+	}
+
 }

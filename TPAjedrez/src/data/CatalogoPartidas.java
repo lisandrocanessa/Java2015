@@ -4,8 +4,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import entidades.Jugador;
+import entidades.Ficha;
 import entidades.Partida;
 
 public class CatalogoPartidas {
@@ -14,7 +16,7 @@ public class CatalogoPartidas {
 	public Partida getPartidaAnterior(Jugador j1, Jugador j2) throws ClassNotFoundException, SQLException {
 		// TODO Auto-generated method stub
 		PreparedStatement ps = FactoriaConexiones.getInstancia().getConn().prepareStatement("select * from partidas"
-				+ "where dni1=? and dni2=?");
+				+ "where dni1=? and dni2=? and turno is not 3");
 		ps.setInt(1, j1.getDni());
 		ps.setInt(2, j2.getDni());
 		ResultSet rs = ps.executeQuery();
@@ -85,6 +87,29 @@ public class CatalogoPartidas {
 		
 		return p;
 		
+	}
+	
+	// guarda el tablero en la bd
+	public void guardarTablero(ArrayList<Ficha> tablero, Partida p) throws ClassNotFoundException, SQLException {
+	// TODO Auto-generated method stub
+		for (Ficha f : tablero){
+			PreparedStatement ps = FactoriaConexiones.getInstancia().getConn().prepareStatement(
+					"insert into fichas(nropartida,dni,nombre,posx,posy,estado) values (?,?,?,?,?,?)");
+			ps.setInt(1, p.getNroPartida());
+			ps.setInt(2, f.getDni());
+			ps.setString(3, f.getNombre());
+			ps.setInt(4, f.getPosX());
+			ps.setInt(5, f.getPosY());
+			if (f.isEstado()){
+				ps.setInt(6, 1);
+			}
+			else {
+				ps.setInt(6, 0);
+			}
+			ps.close();
+		}
+	
+	FactoriaConexiones.getInstancia().releaseConn();
 	}
 
 }

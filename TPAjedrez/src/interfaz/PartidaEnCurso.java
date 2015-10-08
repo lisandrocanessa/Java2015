@@ -6,14 +6,18 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 import java.awt.Font;
 
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 
+import entidades.Ficha;
 import entidades.Partida;
+import negocio.ControladorPartida;
 
 public class PartidaEnCurso extends JFrame {
 
@@ -23,6 +27,11 @@ public class PartidaEnCurso extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private Partida partida;
+	private JTextArea txtJugadorUno;
+	private JTextArea txtJugadorDos;
+	private JLabel lblJugadorUno;
+	private JLabel lblJugadorDos;
+	private JLabel lblJugadorTurno;
 
 	/**
 	 * Launch the application.
@@ -116,4 +125,34 @@ public class PartidaEnCurso extends JFrame {
 	public void setPartida(Partida partida) {
 		this.partida = partida;
 	}
+
+	public void iniciarPartida(Partida p) {
+		// TODO Auto-generated method stub
+		ControladorPartida cp = new ControladorPartida();
+		this.setPartida(p);
+		this.lblJugadorUno.setText(Integer.toString(this.getPartida().getJ1().getDni()));
+		this.lblJugadorDos.setText(Integer.toString(this.getPartida().getJ2().getDni()));
+		try {
+			this.partida.setTablero(cp.inicializarTablero(this.partida));
+		} catch (Exception e) {
+		// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, "Ha ocurrido un problema!");
+		}
+		for (Ficha f : this.partida.getTablero()){
+			if (f.getDni()==this.partida.getJ1().getDni()){
+				this.txtJugadorUno.append(f.getNombre() + "  (" + f.getPosX() + "," + f.getPosY() + ")");
+			}
+			else {
+				this.txtJugadorDos.append(f.getNombre() + "  (" + f.getPosX() + "," + f.getPosY() + ")");
+			}
+		}
+		if (this.partida.getTurno()==1){
+			this.lblJugadorTurno.setText(Integer.toString(this.partida.getJ1().getDni()));
+		}
+		else {
+			this.lblJugadorTurno.setText(Integer.toString(this.partida.getJ2().getDni()));
+		}
+
+		// falta llenar los combobox!!
+		}
 }

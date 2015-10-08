@@ -18,7 +18,7 @@ public class Partida {
 	public void setNroPartida(int nroPartida) {
 		this.nroPartida = nroPartida;
 	}
-		public int getTurno() {
+	public int getTurno() {
 		return turno;
 	}
 	public void setTurno(int turno) {
