@@ -197,6 +197,11 @@ public class ControladorPartida {
 	return tablero;
 	}
 
+	public ArrayList<Ficha> cargarTablero(Partida p) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 
 }

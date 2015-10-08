@@ -86,10 +86,12 @@ public class Login extends JFrame {
 		btnIniciarNuevaPartida.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				iniciarPartida();
+				if(validarCampos())
+					iniciarPartida();
 			}
 
 		});
+		
 		btnIniciarNuevaPartida.setBounds(220, 73, 214, 23);
 		contentPane.add(btnIniciarNuevaPartida);
 		
@@ -104,59 +106,67 @@ public class Login extends JFrame {
 		btnRegistrarNuevoJugador.setBounds(220, 107, 214, 23);
 		contentPane.add(btnRegistrarNuevoJugador);
 	}
+	private boolean validarCampos() {
+		if(this.txtDniJugadorDos.getText()==this.txtDniJugadorUno.getText()){
+			JOptionPane.showMessageDialog(null, "Los Dni's Deben ser diferentes");
+			return false;
+		}
+		else if(this.txtDniJugadorUno.getText().equals("") && !this.txtDniJugadorDos.getText().equals("")){
+			JOptionPane.showMessageDialog(null, "Los campos son obligatorios");
+			return false;
+		}
+		else
+			return true;
+	}
 	
 	private void iniciarPartida() {
-		// TODO Auto-generated method stub
-		if (!this.txtDniJugadorUno.getText().equals("") && !this.txtDniJugadorDos.getText().equals("")) {
-		
-			ControladorLogin cl = new ControladorLogin();
-			int dni1 = Integer.parseInt(txtDniJugadorUno.getText());
-			int dni2 = Integer.parseInt(txtDniJugadorDos.getText());
-			try {
-				Jugador j1 = cl.buscarJugador(dni1);
-				Jugador j2 = cl.buscarJugador(dni2);
-				if (j1 == null) {
-					JOptionPane.showMessageDialog(null,
-							"El jugador 1 no esta registrado");
-				} else if (j2 == null) {
-					JOptionPane.showMessageDialog(null,
-							"El jugador 2 no esta registrado");
-				} else {
-					ControladorPartida cp = new ControladorPartida();
-					Partida p = cp.partidaAnterior(j1, j2);
-					if (p == null){
-						// inicia nueva partida
-						p = cp.iniciarPartida(j1,j2);
+		// TODO Auto-generated method stub		
+		ControladorLogin cl = new ControladorLogin();
+		int dni1 = Integer.parseInt(txtDniJugadorUno.getText());
+		int dni2 = Integer.parseInt(txtDniJugadorDos.getText());
+		try {
+			Jugador j1 = cl.buscarJugador(dni1);
+			Jugador j2 = cl.buscarJugador(dni2);
+			if (j1 == null) {
+				JOptionPane.showMessageDialog(null,
+						"El jugador 1 no esta registrado");
+			} else if (j2 == null) {
+				JOptionPane.showMessageDialog(null,
+						"El jugador 2 no esta registrado");
+			} else {
+				ControladorPartida cp = new ControladorPartida();
+				Partida p = cp.partidaAnterior(j1, j2);
+				if (p == null){
+					// inicia nueva partida
+					p = cp.iniciarPartida(j1,j2);
+					PartidaEnCurso pec = new PartidaEnCurso();
+					pec.setPartida(p);
+					pec.setVisible(true);
+				}
+				else {
+					// si existen partidas anteriores pregunta si se desea continuar alguna
+					// sino inicia una nueva
+					int rta = JOptionPane.showConfirmDialog(null, "Existe una partida anterior, desea continuarla?", 
+							"Partidas Anteriores", JOptionPane.YES_NO_OPTION);
+					if (rta == JOptionPane.YES_OPTION){
+						p.setTablero(cp.cargarTablero(p));
 						PartidaEnCurso pec = new PartidaEnCurso();
-						pec.setPartida(p);
+						pec.iniciarPartida(p);
 						pec.setVisible(true);
 					}
 					else {
-						// si existen partidas anteriores pregunta si se desea continuar alguna
-						// sino inicia una nueva
-						int rta = JOptionPane.showConfirmDialog(null, "Existe una partida anterior, desea continuarla?", 
-								"Partidas Anteriores", JOptionPane.YES_NO_OPTION);
-						if (rta == JOptionPane.YES_OPTION){
-							PartidaEnCurso pec = new PartidaEnCurso();
-							pec.iniciarPartida(p);
-							pec.setVisible(true);
-						}
-						else {
-							p = cp.sobreescribirPartida(p);
-							PartidaEnCurso pec = new PartidaEnCurso();
-							pec.iniciarPartida(p);
-							pec.setVisible(true);
-						}
+						p = cp.sobreescribirPartida(p);
+						PartidaEnCurso pec = new PartidaEnCurso();
+						pec.iniciarPartida(p);
+						pec.setVisible(true);
 					}
 				}
-			} catch (ClassNotFoundException | SQLException e) {
-				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(null, "Ha ocurrido un problema");
 			}
+		} catch (ClassNotFoundException | SQLException e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, "Ha ocurrido un problema");
 		}
-		else {
-			JOptionPane.showMessageDialog(null, "Hay campos incompletos");
-		}
+		
 		
 	}
 	private void registrarJugador() {
