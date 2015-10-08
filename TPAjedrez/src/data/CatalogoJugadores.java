@@ -37,6 +37,7 @@ public class CatalogoJugadores {
 		
 	}
 
+	// registra un nuevo jugador
 	public void guardarJugador(Jugador j) throws ClassNotFoundException, SQLException {
 		// TODO Auto-generated method stub
 		PreparedStatement ps = FactoriaConexiones.getInstancia().getConn().prepareStatement("insert into jugadores(dni,nombre,apellido) values (?, ?, ?)");

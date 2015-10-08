@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 
+import negocio.ControladorLogin;
 import entidades.Jugador;
 
 import java.awt.event.MouseAdapter;
@@ -68,16 +69,19 @@ public class Registro extends JFrame {
 		txtDni.setBounds(77, 34, 172, 20);
 		contentPane.add(txtDni);
 		txtDni.setColumns(10);
+		txtDni.setText("");
 		
 		txtApellido = new JTextField();
 		txtApellido.setBounds(77, 84, 172, 20);
 		contentPane.add(txtApellido);
 		txtApellido.setColumns(10);
+		txtApellido.setText("");
 		
 		txtNombre = new JTextField();
 		txtNombre.setBounds(77, 59, 172, 20);
 		contentPane.add(txtNombre);
 		txtNombre.setColumns(10);
+		txtNombre.setText("");
 		
 		JButton btnAceptar = new JButton("Aceptar");
 		btnAceptar.addMouseListener(new MouseAdapter() {
@@ -102,17 +106,24 @@ public class Registro extends JFrame {
 	
 	private void registrarJugador() {
 		if (validarCampos()){
-			Jugador j = new Jugador();
-			j.setDni(Integer.parseInt(this.txtDni.getText()));
-			j.setNombre(this.txtNombre.getText());
-			j.setApellido(this.txtApellido.getText());
+			ControladorLogin cl = new ControladorLogin();
 			try {
-				j.guardarJugador();
+				Jugador j = cl.buscarJugador(Integer.parseInt(this.txtDni.getText()));
+				if (j==null){
+					j.setDni(Integer.parseInt(this.txtDni.getText()));
+					j.setNombre(this.txtNombre.getText());
+					j.setApellido(this.txtApellido.getText());
+					cl.guardarJugador(j);
+					JOptionPane.showMessageDialog(null, "El jugador ha sido registrado");
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "El jugador ya existe");
+				}
 			} catch (ClassNotFoundException | SQLException e) {
 				// TODO Auto-generated catch block
 				JOptionPane.showMessageDialog(null, "El jugador no pudo registrarse.");
 			}
-			JOptionPane.showMessageDialog(null, "El jugador ha sido registrado");
+			
 			
 		}
 		else {
@@ -125,7 +136,7 @@ public class Registro extends JFrame {
 //			return true;
 //		else
 //			return false;
-		boolean rta = (this.txtApellido.getText()!= null && this.txtDni.getText()!= null && this.txtNombre.getText()!= null);
+		boolean rta = (!this.txtApellido.getText().equals("") || !this.txtDni.getText().equals("") || !this.txtNombre.getText().equals(""));
 		return rta;
 	}
 

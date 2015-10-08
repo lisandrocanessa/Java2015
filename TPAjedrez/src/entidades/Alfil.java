@@ -2,11 +2,11 @@ package entidades;
 
 public class Alfil extends Ficha {
 
+	// setea posicion inicial
 	@Override
 	public void posicionInicial(int posX) {
 		this.setPosX(posX);
 		this.setPosY(1);
-		
 	}
 
 	@Override

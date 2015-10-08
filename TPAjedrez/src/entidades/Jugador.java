@@ -1,8 +1,5 @@
 package entidades;
 
-import java.sql.SQLException;
-
-import data.CatalogoJugadores;
 
 public class Jugador {
 	
@@ -32,11 +29,8 @@ public class Jugador {
 	public void setApellido(String apellido) {
 		this.apellido = apellido;
 	}
-	public void guardarJugador() throws ClassNotFoundException, SQLException {
-		// TODO Auto-generated method stub
-		CatalogoJugadores cj = new CatalogoJugadores();
-		cj.guardarJugador(this);
-	}
+	
+	
 	
 	
 }

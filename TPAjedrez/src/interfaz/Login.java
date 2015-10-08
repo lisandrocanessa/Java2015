@@ -105,7 +105,7 @@ public class Login extends JFrame {
 	
 	private void iniciarPartida() {
 		// TODO Auto-generated method stub
-		if (this.txtDniJugadorUno.getText()!= null && this.txtDniJugadorDos.getText()!= null) {
+		if (!this.txtDniJugadorUno.getText().equals("") && !this.txtDniJugadorDos.getText().equals("")) {
 		
 			ControladorLogin cl = new ControladorLogin();
 			int dni1 = Integer.parseInt(txtDniJugadorUno.getText());
@@ -136,11 +136,14 @@ public class Login extends JFrame {
 								"Partidas Anteriores", JOptionPane.YES_NO_OPTION);
 						if (rta == JOptionPane.YES_OPTION){
 							PartidaEnCurso pec = new PartidaEnCurso();
-							pec.setPartida(p);
+							pec.iniciarPartida(p);
 							pec.setVisible(true);
 						}
 						else {
 							p = cp.sobreescribirPartida(p);
+							PartidaEnCurso pec = new PartidaEnCurso();
+							pec.iniciarPartida(p);
+							pec.setVisible(true);
 						}
 					}
 				}

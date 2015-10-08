@@ -7,7 +7,6 @@ public class Reina extends Ficha {
 	public void posicionInicial(int posX) {
 		this.setPosX(posX);
 		this.setPosY(1);
-		
 	}
 
 	@Override
