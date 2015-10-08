@@ -1,6 +1,5 @@
 package interfaz;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -19,6 +18,10 @@ import java.sql.SQLException;
 
 public class Registro extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtDni;
 	private JTextField txtApellido;
@@ -123,9 +126,9 @@ public class Registro extends JFrame {
 	private boolean validarCampos(){
 //		if (this.txtApellido.getText()!="" && this.txtDni.getText()!="" && this.txtNombre.getText()!="")
 //			return true;
-//		else
+//		else                                 otra forma
 //			return false;
-		boolean rta = (this.txtApellido.getText()!= null && this.txtDni.getText()!= null && this.txtNombre.getText()!= null);
+		boolean rta = (!(this.txtApellido.getText().equals("") || this.txtDni.getText().equals("") || this.txtNombre.getText().equals("")));
 		return rta;
 	}
 

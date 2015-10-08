@@ -1,7 +1,6 @@
 package negocio;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import data.CatalogoPartidas;
 import entidades.Jugador;
