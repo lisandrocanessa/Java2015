@@ -9,17 +9,29 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 
 import java.awt.Font;
+import java.sql.SQLException;
 
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 
+import entidades.Ficha;
 import entidades.Partida;
+
+import javax.swing.JTextArea;
+
+import negocio.ControladorPartida;
 
 public class PartidaEnCurso extends JFrame {
 
 	private JPanel contentPane;
 	private Partida partida;
+	private JTextArea txtJugadorUno;
+	private JTextArea txtJugadorDos;
+	private JLabel lblJugadorUno;
+	private JLabel lblJugadorDos;
+	private JLabel lblJugadorTurno;
 
 	/**
 	 * Launch the application.
@@ -50,7 +62,7 @@ public class PartidaEnCurso extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JLabel lblJugadorUno = new JLabel("JUGADOR UNO");
+		lblJugadorUno = new JLabel("JUGADOR UNO");
 		lblJugadorUno.setFont(new Font("Tahoma", Font.PLAIN, 17));
 		lblJugadorUno.setBounds(69, 23, 114, 29);
 		contentPane.add(lblJugadorUno);
@@ -60,7 +72,7 @@ public class PartidaEnCurso extends JFrame {
 		lblVs.setBounds(260, 27, 24, 21);
 		contentPane.add(lblVs);
 		
-		JLabel lblJugadorDos = new JLabel("JUGADOR DOS");
+		lblJugadorDos = new JLabel("JUGADOR DOS");
 		lblJugadorDos.setFont(new Font("Tahoma", Font.PLAIN, 17));
 		lblJugadorDos.setBounds(373, 30, 124, 14);
 		contentPane.add(lblJugadorDos);
@@ -69,19 +81,25 @@ public class PartidaEnCurso extends JFrame {
 		scrTablero.setBounds(28, 63, 204, 217);
 		contentPane.add(scrTablero);
 		
+		txtJugadorUno = new JTextArea();
+		scrTablero.setViewportView(txtJugadorUno);
+		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(323, 63, 204, 217);
 		contentPane.add(scrollPane);
+		
+		txtJugadorDos = new JTextArea();
+		scrollPane.setViewportView(txtJugadorDos);
 		
 		JLabel lblTurnoDe = new JLabel("Turno de:");
 		lblTurnoDe.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lblTurnoDe.setBounds(193, 305, 60, 14);
 		contentPane.add(lblTurnoDe);
 		
-		JLabel lblJugadorturno = new JLabel("JUGADORTURNO");
-		lblJugadorturno.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lblJugadorturno.setBounds(263, 305, 104, 14);
-		contentPane.add(lblJugadorturno);
+		lblJugadorTurno = new JLabel("JUGADORTURNO");
+		lblJugadorTurno.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblJugadorTurno.setBounds(263, 305, 104, 14);
+		contentPane.add(lblJugadorTurno);
 		
 		JComboBox comboBox = new JComboBox();
 		comboBox.setBounds(118, 337, 114, 20);
@@ -109,8 +127,40 @@ public class PartidaEnCurso extends JFrame {
 	public Partida getPartida() {
 		return partida;
 	}
-
 	public void setPartida(Partida partida) {
 		this.partida = partida;
 	}
+
+	// inicializa el tablero
+	public void iniciarPartida(Partida p) {
+		// TODO Auto-generated method stub
+		ControladorPartida cp = new ControladorPartida();
+		this.setPartida(p);
+		this.lblJugadorUno.setText(Integer.toString(this.getPartida().getJ1().getDni()));
+		this.lblJugadorDos.setText(Integer.toString(this.getPartida().getJ2().getDni()));
+		try {
+			this.partida.setTablero(cp.inicializarTablero(this.partida));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, "Ha ocurrido un problema!");
+		}
+		for (Ficha f : this.partida.getTablero()){
+			if (f.getDni()==this.partida.getJ1().getDni()){
+				this.txtJugadorUno.append(f.getNombre() + "  (" + f.getPosX() + "," + f.getPosY() + ")");
+			}
+			else {
+				this.txtJugadorDos.append(f.getNombre() + "  (" + f.getPosX() + "," + f.getPosY() + ")");
+			}
+		}
+		if (this.partida.getTurno()==1){
+			this.lblJugadorTurno.setText(Integer.toString(this.partida.getJ1().getDni()));
+		}
+		else {
+			this.lblJugadorTurno.setText(Integer.toString(this.partida.getJ2().getDni()));
+		}
+		
+		// falta llenar los combobox!!
+	}
+	
+
 }
