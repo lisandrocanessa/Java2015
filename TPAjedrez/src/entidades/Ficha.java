@@ -2,12 +2,13 @@ package entidades;
 
 public abstract class Ficha {
 	private String nombre;
-	// estado = true >> la ficha esta en juego
-	// estado = false >> la ficha fue comida
+	// estado = true >> la ficha esta en juego == 1
+	// estado = false >> la ficha fue comida == 0
 	private boolean estado;
 	private int dni;
 	private int posX;
 	private int posY;
+	private int nroPartida;
 	
 	// getters & setters
 	public String getNombre() {
@@ -42,11 +43,17 @@ public abstract class Ficha {
 	}
 	
 	
-	public abstract void posicionInicial(int posX);
+	public abstract void posicionInicial(int posX, int posY);
 	
 	public abstract boolean hayFichaEnemiga(int posXMov, int posYMov);
 	
 	public abstract boolean validarMovimiento(int posXMov,int posYMov);
+	public int getNroPartida() {
+		return nroPartida;
+	}
+	public void setNroPartida(int nroPartida) {
+		this.nroPartida = nroPartida;
+	}
 
 	
 }

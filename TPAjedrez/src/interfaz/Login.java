@@ -23,6 +23,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class Login extends JFrame {
 
@@ -81,6 +83,10 @@ public class Login extends JFrame {
 		txtDniJugadorDos.setColumns(10);
 		
 		JButton btnIniciarNuevaPartida = new JButton("INICIAR NUEVA PARTIDA");
+		btnIniciarNuevaPartida.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btnIniciarNuevaPartida.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -125,8 +131,8 @@ public class Login extends JFrame {
 					if (p == null){
 						// inicia nueva partida
 						p = cp.iniciarPartida(j1,j2);
-						PartidaEnCurso pec = new PartidaEnCurso();
-						pec.setPartida(p);
+						p.setTablero(cp.inicializarTablero(p));
+						PartidaEnCurso pec = new PartidaEnCurso(p);
 						pec.setVisible(true);
 					}
 					else {
@@ -135,14 +141,13 @@ public class Login extends JFrame {
 						int rta = JOptionPane.showConfirmDialog(null, "Existe una partida anterior, desea continuarla?", 
 								"Partidas Anteriores", JOptionPane.YES_NO_OPTION);
 						if (rta == JOptionPane.YES_OPTION){
-							PartidaEnCurso pec = new PartidaEnCurso();
-							pec.iniciarPartida(p);
+							p.setTablero(cp.cargarTablero(p));
+							PartidaEnCurso pec = new PartidaEnCurso(p);
 							pec.setVisible(true);
 						}
-						else {
+						else if(rta==JOptionPane.NO_OPTION){
 							p = cp.sobreescribirPartida(p);
-							PartidaEnCurso pec = new PartidaEnCurso();
-							pec.iniciarPartida(p);
+							PartidaEnCurso pec = new PartidaEnCurso(p);
 							pec.setVisible(true);
 						}
 					}

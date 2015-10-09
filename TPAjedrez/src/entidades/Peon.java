@@ -3,9 +3,9 @@ package entidades;
 public class Peon extends Ficha {
 
 	@Override
-	public void posicionInicial(int posX) {
+	public void posicionInicial(int posX, int posY) {
 		this.setPosX(posX);
-		this.setPosY(2);
+		this.setPosY(posY);
 	}
 
 	@Override

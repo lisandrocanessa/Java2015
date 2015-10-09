@@ -4,9 +4,9 @@ public class Reina extends Ficha {
 
 
 	@Override
-	public void posicionInicial(int posX) {
+	public void posicionInicial(int posX, int posY) {
 		this.setPosX(posX);
-		this.setPosY(1);
+		this.setPosY(posY);
 	}
 
 	@Override

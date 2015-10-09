@@ -3,6 +3,7 @@ package negocio;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import data.CatalogoFichas;
 import data.CatalogoPartidas;
 import entidades.*;
 
@@ -28,8 +29,9 @@ public class ControladorPartida {
 	public Partida sobreescribirPartida(Partida p) throws ClassNotFoundException, SQLException {
 		// TODO Auto-generated method stub
 		CatalogoPartidas cp = new CatalogoPartidas();
+		CatalogoFichas cf = new CatalogoFichas();
 		cp.borrarPartida(p);
-		cp.borrarFichas(p);
+		cf.borrarFichas(p);
 		p = cp.nuevaPartida(p.getJ1(),p.getJ2());
 		return p;
 	}
@@ -37,156 +39,150 @@ public class ControladorPartida {
 	// inicializa el tablero de una partida
 	public ArrayList<Ficha> inicializarTablero(Partida p) throws ClassNotFoundException, SQLException{
 		ArrayList<Ficha> tablero = new ArrayList<Ficha>();
+		CatalogoFichas cf = new CatalogoFichas();
 		
-		// fichas jugador uno
-		// torres
-		Torre t1 = new Torre();
-		t1.setDni(p.getJ1().getDni());
-		t1.setNombre("Torre 1");
-		t1.setEstado(true);
-		t1.setPosX(1);
-		t1.setPosY(1);
-		tablero.add(t1);
-		Torre t2 = new Torre();
-		t2.setDni(p.getJ1().getDni());
-		t2.setNombre("Torre 2");
-		t2.setEstado(true);
-		t2.setPosX(8);
-		t2.setPosY(1);
-		tablero.add(t2);
-		// alfiles
-		Alfil a1 = new Alfil();
-		a1.setDni(p.getJ1().getDni());
-		a1.setNombre("Alfil 1");
-		a1.setEstado(true);
-		a1.setPosX(3);
-		a1.setPosY(1);
-		tablero.add(a1);
-		Alfil a2 = new Alfil();
-		a2.setDni(p.getJ1().getDni());
-		a2.setNombre("Alfil 2");
-		a2.setEstado(true);
-		a2.setPosX(6);
-		a2.setPosY(1);
-		tablero.add(a2);
-		// caballos
-		Caballo c1 = new Caballo();
-		c1.setDni(p.getJ1().getDni());
-		c1.setNombre("Caballo 1");
-		c1.setEstado(true);
-		c1.setPosX(2);
-		c1.setPosY(1);
-		tablero.add(c1);
-		Caballo c2 = new Caballo();
-		c2.setDni(p.getJ1().getDni());
-		c2.setNombre("Caballo 2");
-		c2.setEstado(true);
-		c2.setPosY(1);
-		c2.setPosX(7);
-		tablero.add(c2);
-		// rey
-		Rey r = new Rey();
-		r.setDni(p.getJ1().getDni());
-		r.setNombre("Rey");
-		r.setEstado(true);
-		r.setPosX(5);
-		r.setPosY(1);
-		tablero.add(r);
-		// reina
-		Reina q = new Reina();
-		q.setDni(p.getJ1().getDni());
-		q.setNombre("Reina");
-		q.setEstado(true);
-		q.setPosY(1);
-		q.setPosX(4);
-		tablero.add(q);
-		// peones 
-		for (int i = 1; i<=8;i++){
-			Peon pe = new Peon();
-			pe.setDni(p.getJ1().getDni());
-			pe.setEstado(true);
-			pe.setNombre("Peon " + Integer.toString(i) );
-			pe.setPosY(2);
-			pe.setPosX(i);
-			tablero.add(pe);
-		}
+		for (int i = 0; i < 2; i++) {
+			if (i==0){
+				for (int y = 1; y < 3; y++) {
+					if (y==1){
+						for (int x = 1; x < 9; x++) {
+							//aca van las fichas de abajo del jugador 1
+							if(x==1 || x==8){
+								Torre t = new Torre();
+								t.posicionInicial(x, y);
+								if(x==1) t.setNombre("t1");
+								else t.setNombre("t2");
+								t.setDni(p.getJ1().getDni());
+								t.setEstado(true);
+								tablero.add(t);
+							}
+							if(x==2 || x==7){
+								Caballo c = new Caballo();
+								c.posicionInicial(x, y);
+								if(x==2) c.setNombre("c1");
+								else c.setNombre("c2");
+								c.setDni(p.getJ1().getDni());
+								c.setEstado(true);
+								tablero.add(c);
+							}
+							if(x==3 || x==6){
+								Alfil a = new Alfil();
+								a.posicionInicial(x, y);
+								if(x==3) a.setNombre("a1");
+								else a.setNombre("a2");
+								a.setDni(p.getJ1().getDni());
+								a.setEstado(true);
+								tablero.add(a);
+							}
+							if(x==4){
+								Reina q=new Reina();
+								q.posicionInicial(x, y);
+								q.setNombre("q");
+								q.setDni(p.getJ1().getDni());
+								q.setEstado(true);
+								tablero.add(q);
+							}
+							if(x==5){
+								Rey r=new Rey();
+								r.posicionInicial(x, y);
+								r.setNombre("r");
+								r.setNombre("r");
+								r.setDni(p.getJ1().getDni());
+								r.setEstado(true);
+								tablero.add(r);
+							}
+						}
+					}
+					else{
+						for (int x = 1; x < 9; x++) {
+							Peon pe = new Peon();
+							pe.posicionInicial(x, y);
+							pe.setNombre("p"+Integer.toString(x));
+							pe.setDni(p.getJ1().getDni());
+							pe.setEstado(true);
+							tablero.add(pe);
+						}
+					}							
+				}					
+			}else if(i==1){
+				for (int y = 1; y < 3; y++) {
+					if (y==1){
+						for (int x = 1; x < 9; x++) {
+							//aca van las fichas de abajo del jugador 2
+							if(x==1 || x==8){
+								Torre t = new Torre();
+								t.posicionInicial(x, 8);
+								if(x==1) t.setNombre("t1");
+								else t.setNombre("t2");
+								t.setDni(p.getJ2().getDni());
+								t.setEstado(true);
+								tablero.add(t);
+							}
+							if(x==2 || x==7){
+								Caballo c = new Caballo();
+								c.posicionInicial(x, 8);
+								if(x==2) c.setNombre("c1");
+								else c.setNombre("c2");
+								c.setDni(p.getJ2().getDni());
+								c.setEstado(true);
+								tablero.add(c);
+							}
+							if(x==3 || x==6){
+								Alfil a = new Alfil();
+								a.posicionInicial(x, 8);
+								if(x==3) a.setNombre("a1");
+								else a.setNombre("a2");
+								a.setDni(p.getJ2().getDni());
+								a.setEstado(true);
+								tablero.add(a);
+							}
+							if(x==4){
+								Rey r=new Rey();
+								r.posicionInicial(x, 8);
+								r.setNombre("r");
+								r.setNombre("r");
+								r.setDni(p.getJ2().getDni());
+								r.setEstado(true);
+								tablero.add(r);
+							}
+							if(x==5){
+								Reina q=new Reina();
+								q.posicionInicial(x, 8);
+								q.setNombre("q");
+								q.setDni(p.getJ2().getDni());
+								q.setEstado(true);
+								tablero.add(q);
+							}
+						}
+					}
+					else{
+						for (int x = 1; x < 9; x++) {
+							Peon pe = new Peon();
+							pe.posicionInicial(x, 7);
+							pe.setNombre("p"+Integer.toString(x));
+							pe.setDni(p.getJ2().getDni());
+							tablero.add(pe);
+						}
+					}
+				}
+			}
+			
+		}	
 		
-		// fichas jugador dos
-		// torres
-		Torre t3 = new Torre();
-		t1.setDni(p.getJ2().getDni());
-		t1.setNombre("Torre 1");
-		t1.setEstado(true);
-		t1.setPosX(1);
-		t1.setPosY(8);
-		tablero.add(t1);
-		Torre t4 = new Torre();
-		t2.setDni(p.getJ2().getDni());
-		t2.setNombre("Torre 2");
-		t2.setEstado(true);
-		t2.setPosX(8);
-		t2.setPosY(8);
-		tablero.add(t2);
-		// alfiles
-		Alfil a3 = new Alfil();
-		a1.setDni(p.getJ2().getDni());
-		a1.setNombre("Alfil 1");
-		a1.setEstado(true);
-		a1.setPosX(3);
-		a1.setPosY(8);
-		tablero.add(a1);
-		Alfil a4 = new Alfil();
-		a2.setDni(p.getJ2().getDni());
-		a2.setNombre("Alfil 2");
-		a2.setEstado(true);
-		a2.setPosX(6);
-		a2.setPosY(8);
-		tablero.add(a2);
-		// caballos
-		Caballo c3 = new Caballo();
-		c1.setDni(p.getJ2().getDni());
-		c1.setNombre("Caballo 1");
-		c1.setEstado(true);
-		c1.setPosX(2);
-		c1.setPosY(8);
-		tablero.add(c1);
-		Caballo c4 = new Caballo();
-		c2.setDni(p.getJ2().getDni());
-		c2.setNombre("Caballo 2");
-		c2.setEstado(true);
-		c2.setPosY(8);
-		c2.setPosX(7);
-		tablero.add(c2);
-		// rey
-		Rey r2 = new Rey();
-		r.setDni(p.getJ2().getDni());
-		r.setNombre("Rey");
-		r.setEstado(true);
-		r.setPosX(5);
-		r.setPosY(8);
-		tablero.add(r);
-		// reina
-		Reina q2 = new Reina();
-		q.setDni(p.getJ2().getDni());
-		q.setNombre("Reina");
-		q.setEstado(true);
-		q.setPosY(8);
-		q.setPosX(4);
-		tablero.add(q);
-		// peones 
-		for (int i = 1; i<=8;i++){
-			Peon pe = new Peon();
-			pe.setDni(p.getJ2().getDni());
-			pe.setEstado(true);
-			pe.setNombre("Peon " + Integer.toString(i) );
-			pe.setPosY(7);
-			pe.setPosX(i);
-			tablero.add(pe);
-		}
-		
-		CatalogoPartidas cp = new CatalogoPartidas();
-		cp.guardarTablero(tablero, p);
+		cf.guardarTablero(tablero, p);
 		return tablero;
+	}
+
+	// carga tablero de la base de datos
+	public ArrayList<Ficha> cargarTablero(Partida p) throws ClassNotFoundException, SQLException {
+		// TODO Auto-generated method stub
+		CatalogoFichas cf = new CatalogoFichas();
+		return cf.cargarTablero(p);
+	}
+
+	public void realizarMovimiento(String f, int x, int y) {
+		// TODO Auto-generated method stub
+		
 	}
 
 
