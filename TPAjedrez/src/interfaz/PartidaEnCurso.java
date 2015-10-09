@@ -51,6 +51,7 @@ public class PartidaEnCurso extends JFrame {
 	private JComboBox cmbFicha;
 	private JTextField txtPosX;
 	private JTextField txtPosY;
+	private Login login;
 	
 	
 	/**
@@ -303,6 +304,7 @@ public class PartidaEnCurso extends JFrame {
 							JOptionPane.showMessageDialog(null, "Usted ha ganado: " + f.getDni()+ "!");
 							try {
 								cp.borrarFichasYPartida(p);
+								this.login.setVisible(true);
 								this.dispose();
 							} catch (ClassNotFoundException | SQLException e) {
 								JOptionPane.showMessageDialog(null, "Error en la base de datos ln279");
@@ -334,6 +336,11 @@ public class PartidaEnCurso extends JFrame {
 			this.partida.setTurno(2);
 		else
 			this.partida.setTurno(1);
+	}
+
+	public void setLogin(Login login) {
+		// TODO Auto-generated method stub
+		this.login= login;
 	}
 	
 }

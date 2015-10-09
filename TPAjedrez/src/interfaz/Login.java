@@ -133,7 +133,9 @@ public class Login extends JFrame {
 						p = cp.iniciarPartida(j1,j2);
 						p.setTablero(cp.inicializarTablero(p));
 						PartidaEnCurso pec = new PartidaEnCurso(p);
+						pec.setLogin(this);
 						pec.setVisible(true);
+						this.setVisible(false);
 					}
 					else {
 						// si existen partidas anteriores pregunta si se desea continuar alguna
