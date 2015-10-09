@@ -163,4 +163,17 @@ public class CatalogoFichas {
 			FactoriaConexiones.getInstancia().releaseConn();
 		}
 
+		public ArrayList<String> getFichasNoComidas(int dni, int nroPartida) throws SQLException, ClassNotFoundException {
+			// TODO Auto-generated method stub
+			ArrayList<String> fichasNoComidas=new ArrayList<>();
+			PreparedStatement ps = FactoriaConexiones.getInstancia().getConn().prepareStatement("select * from fichas where nropartida=? and dni=? and estado=true ");
+			ps.setInt(1, nroPartida);
+			ps.setInt(2, dni);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				fichasNoComidas.add(rs.getString("nombre"));
+			}
+			return fichasNoComidas;
+		}
+
 }

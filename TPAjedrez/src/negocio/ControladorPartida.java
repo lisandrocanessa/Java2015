@@ -161,6 +161,7 @@ public class ControladorPartida {
 							pe.posicionInicial(x, 7);
 							pe.setNombre("p"+Integer.toString(x));
 							pe.setDni(p.getJ2().getDni());
+							pe.setEstado(true);
 							tablero.add(pe);
 						}
 					}
@@ -182,6 +183,12 @@ public class ControladorPartida {
 
 	public void realizarMovimiento(String f, int x, int y) {
 		// TODO Auto-generated method stub
+		
+	}
+
+	public ArrayList<String> dameFichasNoComidas(int dni, int nroPartida) throws ClassNotFoundException, SQLException {
+		CatalogoFichas cf=new CatalogoFichas();
+		return cf.getFichasNoComidas(dni,nroPartida);
 		
 	}
 

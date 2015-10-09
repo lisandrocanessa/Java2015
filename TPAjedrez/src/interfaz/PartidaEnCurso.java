@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 
 import java.awt.Font;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -22,6 +23,8 @@ import entidades.Partida;
 import javax.swing.JTextArea;
 
 import negocio.ControladorPartida;
+
+import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
@@ -174,24 +177,55 @@ public class PartidaEnCurso extends JFrame {
 	// inicializa el tablero
 	public void iniciarPartida() {
 		// TODO Auto-generated method stub
-		ControladorPartida cp = new ControladorPartida();
 		this.lblJugadorUno.setText(Integer.toString(this.getPartida().getJ1().getDni()));
 		this.lblJugadorDos.setText(Integer.toString(this.getPartida().getJ2().getDni()));
+		listarPiezas();
+		
+		
+		// falta llenar los combobox!!
+	}
+
+	@SuppressWarnings("unchecked")
+	private void listarPiezas(){
+		ControladorPartida cp=new ControladorPartida();
+		ArrayList<String> piezasCombo=new ArrayList<>();
 		for (Ficha f : this.partida.getTablero()){
-			if (f.getDni()==this.partida.getJ1().getDni() && f.isEstado()){
-				this.txtJugadorUno.append("  "+f.getNombre() + "     (" + f.getPosX() + ",   " + f.getPosY() + ")"+"\n");
+			if (f.getDni()==this.partida.getJ1().getDni()){
+				this.txtJugadorUno.append("  "+f.getNombre() + "     (" + f.getPosX() + ",   " + f.getPosY() + ")"+f.isEstado()+"\n");
 			}
-			else if (f.getDni()==this.partida.getJ2().getDni() && f.isEstado()) {
-				this.txtJugadorDos.append("  "+f.getNombre() + "     (" + f.getPosX() + ",   " + f.getPosY() + ")"+"\n");
+			else if (f.getDni()==this.partida.getJ2().getDni()) {
+				this.txtJugadorDos.append("  "+f.getNombre() + "     (" + f.getPosX() + ",   " + f.getPosY() + ")"+f.isEstado()+"\n");
 			}
 		}
 		if (this.partida.getTurno()==1){
 			this.lblJugadorTurno.setText(Integer.toString(this.partida.getJ1().getDni()));
+			try {
+				piezasCombo=cp.dameFichasNoComidas(this.partida.getJ1().getDni(),this.partida.getNroPartida());
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		else {
 			this.lblJugadorTurno.setText(Integer.toString(this.partida.getJ2().getDni()));
+			try {
+				piezasCombo=cp.dameFichasNoComidas(this.partida.getJ2().getDni(),this.partida.getNroPartida());
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		
-		// falta llenar los combobox!!
+		@SuppressWarnings("rawtypes")
+		DefaultComboBoxModel mdlCombo= new DefaultComboBoxModel();
+		cmbFicha.setModel(mdlCombo);
+		for (int i = 0; i < piezasCombo.size(); i++) {
+			mdlCombo.addElement(piezasCombo.get(i));
+		}
 	}
 }
