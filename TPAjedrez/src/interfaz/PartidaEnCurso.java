@@ -36,6 +36,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JTextField;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class PartidaEnCurso extends JFrame {
 
@@ -166,11 +168,33 @@ public class PartidaEnCurso extends JFrame {
 		contentPane.add(lblY);
 		
 		txtPosX = new JTextField();
+		txtPosX.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent ke) {
+				char c=ke.getKeyChar();
+		          if(Character.isLetter(c)) {
+		              getToolkit().beep();
+		              ke.consume();
+		              JOptionPane.showMessageDialog(null, "Ingrese solo numeros");		              
+		          }
+			}
+		});
 		txtPosX.setBounds(471, 337, 46, 20);
 		contentPane.add(txtPosX);
 		txtPosX.setColumns(10);
 		
 		txtPosY = new JTextField();
+		txtPosY.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyTyped(KeyEvent ke) {
+				char c=ke.getKeyChar();            	        
+		          if(Character.isLetter(c)) {
+		              getToolkit().beep();		              
+		              ke.consume();		              
+		              JOptionPane.showMessageDialog(null, "Ingrese solo numeros");		              
+		          }
+			}
+		});
 		txtPosY.setBounds(359, 337, 45, 20);
 		contentPane.add(txtPosY);
 		txtPosY.setColumns(10);
@@ -238,7 +262,9 @@ public class PartidaEnCurso extends JFrame {
 	
 	//evento que actualiza la posicion de la pieza si fue movida correctamente
 	private void realizarMovimiento(Partida p) {
-		if(!txtPosX.getText().equals("") && !txtPosY.getText().equals("")){
+		if((!txtPosX.getText().equals("") && !txtPosY.getText().equals("")) && 
+				Integer.parseInt(txtPosX.getText())>0 && Integer.parseInt(txtPosY.getText())>0 
+				&& Integer.parseInt(txtPosX.getText())<9 && Integer.parseInt(txtPosY.getText())<9){
 			ControladorPartida cp = new ControladorPartida();
 			Ficha f = null;
 			//busco ficha con el metodo dame ficha mandandole el texto del comboBox
@@ -297,8 +323,8 @@ public class PartidaEnCurso extends JFrame {
 			else
 				JOptionPane.showMessageDialog(null, "La pieza no puede moverse a ese sitio");
 		}
-			else
-				JOptionPane.showMessageDialog(null, "Todos los campos deben estar completos");
+		else
+			JOptionPane.showMessageDialog(null, "Ingreso de posiciones no válidos");
 	}
 	
 	//metodo que cambia el turno de la partida, falta actualizar en la DB
