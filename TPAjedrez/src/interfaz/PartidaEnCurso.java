@@ -30,6 +30,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JTextField;
 
 public class PartidaEnCurso extends JFrame {
 
@@ -41,7 +42,8 @@ public class PartidaEnCurso extends JFrame {
 	private JLabel lblJugadorDos;
 	private JLabel lblJugadorTurno;
 	private JComboBox cmbFicha;
-	private JComboBox cmbPosX, cmbPosY;
+	private JTextField txtPosX;
+	private JTextField txtPosY;
 	
 	
 	/**
@@ -138,45 +140,60 @@ public class PartidaEnCurso extends JFrame {
 		btnRealizarMovimiento.addActionListener(new ActionListener() {
 			//evento que actualiza la posicion de la pieza si fue movida correctamente
 			public void actionPerformed(ActionEvent arg0) {
-				ControladorPartida cp = new ControladorPartida();
-				Ficha f = null;
-				//busco ficha con el metodo dame ficha mandandole el texto del comboBox
-				try{
-					if(p.getTurno()==1){
-						f=cp.dameFicha(cmbFicha.getSelectedItem().toString(),p.getNroPartida(),p.getJ1().getDni());
-					}
-					else{
-						f=cp.dameFicha(cmbFicha.getSelectedItem().toString(),p.getNroPartida(),p.getJ2().getDni());
-					}
-					//valido que el movimiento fuese posible y si lo es invoco a realizar movimiento
-					if(f.validarMovimiento(cmbPosX.getSelectedIndex()+1, cmbPosY.getSelectedIndex()+1)){
-						cp.realizarMovimiento(f, cmbPosX.getSelectedIndex()+1, cmbPosY.getSelectedIndex()+1);
-					}
-					listarPiezas();
-				}catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					JOptionPane.showMessageDialog(null, "Ha ocurrido un error con la db");
-				}
+				boolean bandera=true;
+				while(bandera){
+					if(!txtPosX.getText().equals("") && !txtPosY.getText().equals("")){
+						ControladorPartida cp = new ControladorPartida();
+						Ficha f = null;
+						//busco ficha con el metodo dame ficha mandandole el texto del comboBox
+						try{
+							if(p.getTurno()==1){
+								f=cp.dameFicha(cmbFicha.getSelectedItem().toString(),p.getNroPartida(),p.getJ1().getDni());
+							}
+							else{
+								f=cp.dameFicha(cmbFicha.getSelectedItem().toString(),p.getNroPartida(),p.getJ2().getDni());
+							}
+							//valido que el movimiento fuese posible y si lo es invoco a realizar movimiento
+							if(f.validarMovimiento(Integer.parseInt(txtPosX.getText()), Integer.parseInt(txtPosY.getText()))){
+								cp.realizarMovimiento(f, Integer.parseInt(txtPosX.getText()), Integer.parseInt(txtPosY.getText()));
+								bandera=true;
+								JOptionPane.showMessageDialog(null, "El movimiento ha sido exitoso");
+								cambiarTurno();
+								listarPiezas();
+							}
+							else
+								JOptionPane.showMessageDialog(null, "La pieza no puede moverse a ese sitio");
+						}catch (ClassNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							JOptionPane.showMessageDialog(null, "Ha ocurrido un error con la db");
+						}
 				
+					}
+					else
+						JOptionPane.showMessageDialog(null, "Todos los campos deben estar completos");
+				}
+			}
+
+			//metodo que cambia el turno de la partida, falta actualizar en la DB
+			private void cambiarTurno() {
+				// TODO Auto-generated method stub
+				if(p.getTurno()==1)
+					p.setTurno(2);
+				else
+					p.setTurno(1);
 			}
 			
 		});
 		btnRealizarMovimiento.setBounds(179, 382, 204, 29);
 		contentPane.add(btnRealizarMovimiento);
 		
-		JComboBox cmbPosY = new JComboBox();
-		cmbPosY.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8"}));
-		cmbPosY.setBounds(365, 337, 37, 20);
-		contentPane.add(cmbPosY);
-		
-		JComboBox cmbPosX = new JComboBox();
-		cmbPosX.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8"}));
-		cmbPosX.setToolTipText("");
-		cmbPosX.setBounds(474, 337, 38, 20);
-		contentPane.add(cmbPosX);
+		ArrayList<Integer> ejes=new ArrayList<>();
+		for (int i = 1; i < 9; i++) {
+			ejes.add(i);
+		}
 		
 		JLabel lblX = new JLabel("Fila:");
 		lblX.setFont(new Font("Tahoma", Font.PLAIN, 13));
@@ -185,8 +202,18 @@ public class PartidaEnCurso extends JFrame {
 		
 		JLabel lblY = new JLabel("Columna:");
 		lblY.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		lblY.setBounds(412, 332, 67, 29);
+		lblY.setBounds(414, 332, 67, 29);
 		contentPane.add(lblY);
+		
+		txtPosX = new JTextField();
+		txtPosX.setBounds(471, 337, 46, 20);
+		contentPane.add(txtPosX);
+		txtPosX.setColumns(10);
+		
+		txtPosY = new JTextField();
+		txtPosY.setBounds(359, 337, 45, 20);
+		contentPane.add(txtPosY);
+		txtPosY.setColumns(10);
 		this.partida = p;
 		iniciarPartida();
 		
@@ -212,6 +239,10 @@ public class PartidaEnCurso extends JFrame {
 	private void listarPiezas(){
 		ControladorPartida cp=new ControladorPartida();
 		ArrayList<String> piezasCombo=new ArrayList<>();
+		txtJugadorUno.setText(null);
+		txtJugadorDos.setText(null);
+		txtPosX.setText(null);
+		txtPosY.setText(null);
 		for (Ficha f : this.partida.getTablero()){
 			if (f.getDni()==this.partida.getJ1().getDni()){
 				this.txtJugadorUno.append("  "+f.getNombre() + "     (" + f.getPosX() + ",   " + f.getPosY() + ")"+f.isEstado()+"\n");

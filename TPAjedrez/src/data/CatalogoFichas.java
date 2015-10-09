@@ -182,15 +182,16 @@ public class CatalogoFichas {
 			return fichasNoComidas;
 		}
 		
-		//Da error esta conexion pero no descubro por que me toma el resulset vacio cuando deberia encontrar un registro, ya mire los parametros y le llegan correctamente
+		//devuelve una sola ficha
 		public Ficha getFicha(String nombre, int nroPartida, int dni) throws ClassNotFoundException, SQLException {
 			// TODO Auto-generated method stub
 			Ficha f=null;
 			PreparedStatement ps = FactoriaConexiones.getInstancia().getConn().prepareStatement("select * from fichas where nropartida=? and dni=? and nombre=?");
 			ps.setInt(1, nroPartida);
 			ps.setInt(2, dni);
-			ps.setString(3, nombre);
+			ps.setString(3, nombre.toString());
 			ResultSet rs = ps.executeQuery();
+				
 			while (rs.next()){
 				if(rs.getString("nombre").contains("t"))
 					f=new Torre();
@@ -225,7 +226,7 @@ public class CatalogoFichas {
 			ps.setInt(2, y);
 			ps.setInt(3, f.getNroPartida());
 			ps.setInt(4, f.getDni());
-			ps.setString(5, f.getNombre());
+			ps.setString(5, f.getNombre().toString());
 			ps.executeUpdate();
 			ps.close();
 			FactoriaConexiones.getInstancia().releaseConn();
