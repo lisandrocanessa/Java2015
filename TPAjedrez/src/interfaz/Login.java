@@ -146,7 +146,9 @@ public class Login extends JFrame {
 							pec.setVisible(true);
 						}
 						else if(rta==JOptionPane.NO_OPTION){
-							p = cp.sobreescribirPartida(p);
+							cp.borrarFichasYPartida(p);
+							p = cp.iniciarPartida(j1,j2);
+							p.setTablero(cp.inicializarTablero(p));
 							PartidaEnCurso pec = new PartidaEnCurso(p);
 							pec.setVisible(true);
 						}
@@ -154,7 +156,7 @@ public class Login extends JFrame {
 				}
 			} catch (ClassNotFoundException | SQLException e) {
 				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(null, "Ha ocurrido un problema");
+				JOptionPane.showMessageDialog(null, "Ha ocurrido un problema con la DB");
 			}
 		}
 		else {

@@ -25,17 +25,6 @@ public class ControladorPartida {
 		return cp.getPartidaAnterior(j1,j2);
 	}
 	
-	// sobreescribe una partida que ya existe
-	public Partida sobreescribirPartida(Partida p) throws ClassNotFoundException, SQLException {
-		// TODO Auto-generated method stub
-		CatalogoPartidas cp = new CatalogoPartidas();
-		CatalogoFichas cf = new CatalogoFichas();
-		cp.borrarPartida(p);
-		cf.borrarFichas(p);
-		p = cp.nuevaPartida(p.getJ1(),p.getJ2());
-		return p;
-	}
-	
 	// inicializa el tablero de una partida
 	public ArrayList<Ficha> inicializarTablero(Partida p) throws ClassNotFoundException, SQLException{
 		ArrayList<Ficha> tablero = new ArrayList<Ficha>();
@@ -161,6 +150,7 @@ public class ControladorPartida {
 							pe.posicionInicial(x, 7);
 							pe.setNombre("p"+Integer.toString(x));
 							pe.setDni(p.getJ2().getDni());
+							pe.setEstado(true);
 							tablero.add(pe);
 						}
 					}
@@ -180,9 +170,29 @@ public class ControladorPartida {
 		return cf.cargarTablero(p);
 	}
 
-	public void realizarMovimiento(String f, int x, int y) {
-		// TODO Auto-generated method stub
+	public void realizarMovimiento(Ficha f, int x, int y) throws ClassNotFoundException, SQLException {
+		CatalogoFichas cf=new CatalogoFichas();
+		cf.updateFicha(f,x,y);
+	}
+
+	public ArrayList<String> dameFichasNoComidas(int dni, int nroPartida) throws ClassNotFoundException, SQLException {
+		CatalogoFichas cf=new CatalogoFichas();
+		return cf.getFichasNoComidas(dni,nroPartida);
 		
+	}
+
+	public Ficha dameFicha(String nombre, int nroPartida, int dni) throws ClassNotFoundException, SQLException {
+		// TODO Auto-generated method stub
+		CatalogoFichas cf=new CatalogoFichas();
+		return cf.getFicha(nombre,nroPartida,dni);
+	}
+	
+	//borra las fichas y partida
+	public void borrarFichasYPartida(Partida p) throws ClassNotFoundException, SQLException {
+		CatalogoPartidas cp = new CatalogoPartidas();
+		CatalogoFichas cf = new CatalogoFichas();
+		cf.borrarFichas(p);
+		cp.borrarPartida(p);
 	}
 
 

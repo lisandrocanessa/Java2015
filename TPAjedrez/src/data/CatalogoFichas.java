@@ -3,6 +3,7 @@ package data;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import entidades.*;
@@ -140,6 +141,9 @@ public class CatalogoFichas {
 					tablero.add(f);
 				}				
 			}
+			rs.close();
+			ps.close();
+			FactoriaConexiones.getInstancia().releaseConn();
 			return tablero;
 		}
 
@@ -161,6 +165,72 @@ public class CatalogoFichas {
 			ps.execute();
 			ps.close();
 			FactoriaConexiones.getInstancia().releaseConn();
+		}
+
+		//select que busca las fichas no comida de una partida para un jugador
+		public ArrayList<String> getFichasNoComidas(int dni, int nroPartida) throws SQLException, ClassNotFoundException {
+			// TODO Auto-generated method stub
+			ArrayList<String> fichasNoComidas=new ArrayList<>();
+			PreparedStatement ps = FactoriaConexiones.getInstancia().getConn().prepareStatement("select * from fichas where nropartida=? and dni=? and estado=true ");
+			ps.setInt(1, nroPartida);
+			ps.setInt(2, dni);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()){
+				fichasNoComidas.add(rs.getString("nombre"));
+			}
+			ps.close();
+			return fichasNoComidas;
+		}
+		
+		//devuelve una sola ficha
+		public Ficha getFicha(String nombre, int nroPartida, int dni) throws ClassNotFoundException, SQLException {
+			// TODO Auto-generated method stub
+			Ficha f=null;
+			PreparedStatement ps = FactoriaConexiones.getInstancia().getConn().prepareStatement("select * from fichas where nropartida=? and dni=? and nombre=?");
+			ps.setInt(1, nroPartida);
+			ps.setInt(2, dni);
+			ps.setString(3, nombre.toString());
+			ResultSet rs = ps.executeQuery();
+				
+			while (rs.next()){
+				if(rs.getString("nombre").contains("t"))
+					f=new Torre();
+				else if(rs.getString("nombre").contains("c"))
+					f=new Caballo();
+				else if(rs.getString("nombre").contains("a"))
+					f=new Alfil();
+				else if(rs.getString("nombre").contains("q"))
+					f=new Reina();
+				else if(rs.getString("nombre").contains("r"))
+					f=new Rey();
+				else if(rs.getString("nombre").contains("p"))
+					f=new Peon();
+				f.setDni(rs.getInt("dni"));
+				f.setEstado(true);
+				f.setNombre(rs.getString("nombre"));
+				f.setNroPartida(rs.getInt("nropartida"));
+				f.setPosX(rs.getInt("posx"));
+				f.setPosY(rs.getInt("posy"));
+			}
+			rs.close();
+			ps.close();
+			FactoriaConexiones.getInstancia().releaseConn();
+			return f;
+		}
+
+		//update que actualiza la posicion de la ficha que se movio (Aun no probado porque no llega hasta aca)
+		public void updateFicha(Ficha f, int x, int y) throws ClassNotFoundException, SQLException {
+			// TODO Auto-generated method stub
+			PreparedStatement ps = FactoriaConexiones.getInstancia().getConn().prepareStatement("update fichas set posx=?, posy=? where nropartida=? and dni=? and nombre=?");
+			ps.setInt(1, x);
+			ps.setInt(2, y);
+			ps.setInt(3, f.getNroPartida());
+			ps.setInt(4, f.getDni());
+			ps.setString(5, f.getNombre().toString());
+			ps.executeUpdate();
+			ps.close();
+			FactoriaConexiones.getInstancia().releaseConn();
+
 		}
 
 }

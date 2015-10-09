@@ -9,7 +9,7 @@ public class FactoriaConexiones {
 	String host = "localhost";
 	String port = "3306";
 	String user = "root";
-	String pass = "";
+	String pass = "root";
 	String db = "tpajedrez";
 	
 	private Connection conn;
