@@ -26,10 +26,12 @@ import negocio.ControladorPartida;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
+
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
 import javax.swing.JTextField;
 
 public class PartidaEnCurso extends JFrame {
@@ -138,58 +140,9 @@ public class PartidaEnCurso extends JFrame {
 		
 		JButton btnRealizarMovimiento = new JButton("REALIZAR MOVIMIENTO");
 		btnRealizarMovimiento.addActionListener(new ActionListener() {
-			//evento que actualiza la posicion de la pieza si fue movida correctamente
 			public void actionPerformed(ActionEvent arg0) {
-				if(!txtPosX.getText().equals("") && !txtPosY.getText().equals("")){
-					ControladorPartida cp = new ControladorPartida();
-					Ficha f = null;
-					//busco ficha con el metodo dame ficha mandandole el texto del comboBox
-					if(p.getTurno()==1){
-					//f=cp.dameFicha(cmbFicha.getSelectedItem().toString(),p.getNroPartida(),p.getJ1().getDni());
-						for (int i = 0; i < p.getTablero().size(); i++) {
-							if(p.getTablero().get(i).getNombre()==cmbFicha.getSelectedItem().toString() &&
-								p.getTablero().get(i).getDni()==p.getJ1().getDni()){
-								f=p.getTablero().get(i);
-							}
-						}
-					}
-					else{
-						//f=cp.dameFicha(cmbFicha.getSelectedItem().toString(),p.getNroPartida(),p.getJ2().getDni());
-						for (int i = 0; i < p.getTablero().size(); i++) {
-							if(p.getTablero().get(i).getNombre()==cmbFicha.getSelectedItem().toString() &&
-								p.getTablero().get(i).getDni()==p.getJ2().getDni()){
-								f=partida.getTablero().get(i);
-							}
-						}
-						
-					}
-					//valido que el movimiento fuese posible y si lo es invoco a realizar movimiento
-					if(f.validarMovimiento(Integer.parseInt(txtPosX.getText()), Integer.parseInt(txtPosY.getText()))){
-						//cp.realizarMovimiento(f, Integer.parseInt(txtPosX.getText()), Integer.parseInt(txtPosY.getText()));
-						f.setPosX(Integer.parseInt(txtPosX.getText()));
-						f.setPosY(Integer.parseInt(txtPosY.getText()));
-						JOptionPane.showMessageDialog(null, "El movimiento ha sido efectuado correctamente");
-						cambiarTurno();
-						listarPiezas();
-					}
-					else
-						JOptionPane.showMessageDialog(null, "La pieza no puede moverse a ese sitio");
-				}
-					else
-						JOptionPane.showMessageDialog(null, "Todos los campos deben estar completos");
-				
-			
+				realizarMovimiento(p);
 			}
-
-			//metodo que cambia el turno de la partida, falta actualizar en la DB
-			private void cambiarTurno() {
-				// TODO Auto-generated method stub
-				if(p.getTurno()==1)
-					p.setTurno(2);
-				else
-					p.setTurno(1);
-			}
-			
 		});
 		btnRealizarMovimiento.setBounds(179, 382, 204, 29);
 		contentPane.add(btnRealizarMovimiento);
@@ -241,7 +194,6 @@ public class PartidaEnCurso extends JFrame {
 	@SuppressWarnings("unchecked")
 	//metodo que actualiza el form de la partida
 	private void listarPiezas(){
-		ControladorPartida cp=new ControladorPartida();
 		ArrayList<String> piezasCombo=new ArrayList<>();
 		txtJugadorUno.setText(null);
 		txtJugadorDos.setText(null);
@@ -280,4 +232,70 @@ public class PartidaEnCurso extends JFrame {
 			mdlCombo.addElement(piezasCombo.get(i));
 		}
 	}
+	
+	//evento que actualiza la posicion de la pieza si fue movida correctamente
+	private void realizarMovimiento(Partida p) {
+		if(!txtPosX.getText().equals("") && !txtPosY.getText().equals("")){
+			ControladorPartida cp = new ControladorPartida();
+			Ficha f = null;
+			//busco ficha con el metodo dame ficha mandandole el texto del comboBox
+			if(p.getTurno()==1){
+			//f=cp.dameFicha(cmbFicha.getSelectedItem().toString(),p.getNroPartida(),p.getJ1().getDni());
+				for (int i = 0; i < p.getTablero().size(); i++) {
+					if(p.getTablero().get(i).getNombre()==cmbFicha.getSelectedItem().toString() &&
+						p.getTablero().get(i).getDni()==p.getJ1().getDni()){
+						f=p.getTablero().get(i);
+					}
+				}
+			}
+			else{
+				//f=cp.dameFicha(cmbFicha.getSelectedItem().toString(),p.getNroPartida(),p.getJ2().getDni());
+				for (int i = 0; i < p.getTablero().size(); i++) {
+					if(p.getTablero().get(i).getNombre()==cmbFicha.getSelectedItem().toString() &&
+						p.getTablero().get(i).getDni()==p.getJ2().getDni()){
+						f=partida.getTablero().get(i);
+					}
+				}
+				
+			}
+			//valido que el movimiento fuese posible y si lo es invoco a realizar movimiento
+			if(f.validarMovimiento(Integer.parseInt(txtPosX.getText()), Integer.parseInt(txtPosY.getText()))
+					&& cp.validarMovimiento(Integer.parseInt(txtPosX.getText()), Integer.parseInt(txtPosY.getText()),f.getDni() ,this.partida)){
+				//cp.realizarMovimiento(f, Integer.parseInt(txtPosX.getText()), Integer.parseInt(txtPosY.getText()));
+				f.setPosX(Integer.parseInt(txtPosX.getText()));
+				f.setPosY(Integer.parseInt(txtPosY.getText()));
+				// recorre el tablero y se fija si hay una ficha enemiga ahi
+				for (Ficha objetivo : this.partida.getTablero()){
+					if (f.getPosX()==objetivo.getPosX() && f.getPosY()==objetivo.getPosY() && f.getDni()!=objetivo.getDni()){
+						objetivo.setPosX(0);
+						objetivo.setPosY(0);
+						objetivo.setEstado(false);
+					}
+				}
+				JOptionPane.showMessageDialog(null, "El movimiento ha sido efectuado correctamente");
+				cambiarTurno();
+				try {
+					cp.guardarPartidaYFichas(partida.getTablero());
+				} catch (ClassNotFoundException | SQLException e) {
+					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(null, "Ha ocurrido un error en la DB ln282");
+				}
+				listarPiezas();
+			}
+			else
+				JOptionPane.showMessageDialog(null, "La pieza no puede moverse a ese sitio");
+		}
+			else
+				JOptionPane.showMessageDialog(null, "Todos los campos deben estar completos");
+	}
+	
+	//metodo que cambia el turno de la partida, falta actualizar en la DB
+	private void cambiarTurno() {
+		// TODO Auto-generated method stub
+		if(this.partida.getTurno()==1)
+			this.partida.setTurno(2);
+		else
+			this.partida.setTurno(1);
+	}
+	
 }

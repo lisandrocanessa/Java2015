@@ -218,19 +218,22 @@ public class CatalogoFichas {
 			return f;
 		}
 
-		//update que actualiza la posicion de la ficha que se movio (Aun no probado porque no llega hasta aca)
-		public void updateFicha(Ficha f, int x, int y) throws ClassNotFoundException, SQLException {
+		//update que actualiza las posiciones de todas las fichas del tablero (No actualiza---ver---llegan bien los parametros)
+		public void updateFichas(ArrayList<Ficha> fichas) throws ClassNotFoundException, SQLException {
 			// TODO Auto-generated method stub
-			PreparedStatement ps = FactoriaConexiones.getInstancia().getConn().prepareStatement("update fichas set posx=?, posy=? where nropartida=? and dni=? and nombre=?");
-			ps.setInt(1, x);
-			ps.setInt(2, y);
-			ps.setInt(3, f.getNroPartida());
-			ps.setInt(4, f.getDni());
-			ps.setString(5, f.getNombre().toString());
-			ps.executeUpdate();
-			ps.close();
-			FactoriaConexiones.getInstancia().releaseConn();
-
+			for (int i = 0; i < fichas.size(); i++) {
+				PreparedStatement ps = FactoriaConexiones.getInstancia().getConn().prepareStatement("update fichas set posx=?, posy=?, estado=? where nropartida=? and dni=? and nombre=?");
+				ps.setInt(1, fichas.get(i).getPosX());
+				ps.setInt(2, fichas.get(i).getPosY());
+				if (fichas.get(i).isEstado()) ps.setInt(3, 1);
+				else ps.setInt(3, 0);
+				ps.setInt(4, fichas.get(i).getNroPartida());
+				ps.setInt(5, fichas.get(i).getDni());
+				ps.setString(6, (String)fichas.get(i).getNombre());
+				ps.executeUpdate();
+				ps.close();
+				FactoriaConexiones.getInstancia().releaseConn();
+			}
 		}
 
 }

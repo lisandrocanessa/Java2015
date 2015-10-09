@@ -170,11 +170,6 @@ public class ControladorPartida {
 		return cf.cargarTablero(p);
 	}
 
-	public void realizarMovimiento(Ficha f, int x, int y) throws ClassNotFoundException, SQLException {
-		CatalogoFichas cf=new CatalogoFichas();
-		cf.updateFicha(f,x,y);
-	}
-
 	public ArrayList<String> dameFichasNoComidas(int dni, int nroPartida) throws ClassNotFoundException, SQLException {
 		CatalogoFichas cf=new CatalogoFichas();
 		return cf.getFichasNoComidas(dni,nroPartida);
@@ -193,6 +188,23 @@ public class ControladorPartida {
 		CatalogoFichas cf = new CatalogoFichas();
 		cf.borrarFichas(p);
 		cp.borrarPartida(p);
+	}
+
+	// valida q no haya una ficha del mismo jugador en esa posicion
+	public boolean validarMovimiento(int x, int y, int dni, Partida partida) {
+		// TODO Auto-generated method stub
+		for (Ficha f : partida.getTablero()){
+			if  (f.getPosX() == x && f.getPosY() == y && f.getDni()==dni){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public void guardarPartidaYFichas(ArrayList<Ficha> fichas) throws ClassNotFoundException, SQLException {
+		// TODO Auto-generated method stub
+		CatalogoFichas cf=new CatalogoFichas();
+		cf.updateFichas(fichas);
 	}
 
 

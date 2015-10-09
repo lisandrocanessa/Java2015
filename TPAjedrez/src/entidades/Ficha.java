@@ -48,6 +48,7 @@ public abstract class Ficha {
 	public abstract boolean hayFichaEnemiga(int posXMov, int posYMov);
 	
 	public abstract boolean validarMovimiento(int posXMov,int posYMov);
+	
 	public int getNroPartida() {
 		return nroPartida;
 	}
