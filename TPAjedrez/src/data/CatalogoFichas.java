@@ -221,15 +221,16 @@ public class CatalogoFichas {
 		//update que actualiza las posiciones de todas las fichas del tablero (No actualiza---ver---llegan bien los parametros)
 		public void updateFichas(ArrayList<Ficha> fichas) throws ClassNotFoundException, SQLException {
 			// TODO Auto-generated method stub
-			for (int i = 0; i < fichas.size(); i++) {
-				PreparedStatement ps = FactoriaConexiones.getInstancia().getConn().prepareStatement("update fichas set posx=?, posy=?, estado=? where nropartida=? and dni=? and nombre=?");
-				ps.setInt(1, fichas.get(i).getPosX());
-				ps.setInt(2, fichas.get(i).getPosY());
-				if (fichas.get(i).isEstado()) ps.setInt(3, 1);
+			for (Ficha f : fichas) {
+				PreparedStatement ps = FactoriaConexiones.getInstancia().getConn().prepareStatement("update "+
+			"fichas set posx=?, posy=?, estado=? where nropartida=? and dni=? and nombre=?");
+				ps.setInt(1, f.getPosX());
+				ps.setInt(2, f.getPosY());
+				if (f.isEstado()) ps.setInt(3, 1);
 				else ps.setInt(3, 0);
-				ps.setInt(4, fichas.get(i).getNroPartida());
-				ps.setInt(5, fichas.get(i).getDni());
-				ps.setString(6, (String)fichas.get(i).getNombre());
+				ps.setInt(4, f.getNroPartida());
+				ps.setInt(5, f.getDni());
+				ps.setString(6, f.getNombre().toString());
 				ps.executeUpdate();
 				ps.close();
 				FactoriaConexiones.getInstancia().releaseConn();
