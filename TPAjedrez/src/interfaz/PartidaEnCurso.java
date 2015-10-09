@@ -140,41 +140,45 @@ public class PartidaEnCurso extends JFrame {
 		btnRealizarMovimiento.addActionListener(new ActionListener() {
 			//evento que actualiza la posicion de la pieza si fue movida correctamente
 			public void actionPerformed(ActionEvent arg0) {
-				boolean bandera=true;
-				while(bandera){
-					if(!txtPosX.getText().equals("") && !txtPosY.getText().equals("")){
-						ControladorPartida cp = new ControladorPartida();
-						Ficha f = null;
-						//busco ficha con el metodo dame ficha mandandole el texto del comboBox
-						try{
-							if(p.getTurno()==1){
-								f=cp.dameFicha(cmbFicha.getSelectedItem().toString(),p.getNroPartida(),p.getJ1().getDni());
+				if(!txtPosX.getText().equals("") && !txtPosY.getText().equals("")){
+					ControladorPartida cp = new ControladorPartida();
+					Ficha f = null;
+					//busco ficha con el metodo dame ficha mandandole el texto del comboBox
+					if(p.getTurno()==1){
+					//f=cp.dameFicha(cmbFicha.getSelectedItem().toString(),p.getNroPartida(),p.getJ1().getDni());
+						for (int i = 0; i < p.getTablero().size(); i++) {
+							if(p.getTablero().get(i).getNombre()==cmbFicha.getSelectedItem().toString() &&
+								p.getTablero().get(i).getDni()==p.getJ1().getDni()){
+								f=p.getTablero().get(i);
 							}
-							else{
-								f=cp.dameFicha(cmbFicha.getSelectedItem().toString(),p.getNroPartida(),p.getJ2().getDni());
-							}
-							//valido que el movimiento fuese posible y si lo es invoco a realizar movimiento
-							if(f.validarMovimiento(Integer.parseInt(txtPosX.getText()), Integer.parseInt(txtPosY.getText()))){
-								cp.realizarMovimiento(f, Integer.parseInt(txtPosX.getText()), Integer.parseInt(txtPosY.getText()));
-								bandera=true;
-								JOptionPane.showMessageDialog(null, "El movimiento ha sido exitoso");
-								cambiarTurno();
-								listarPiezas();
-							}
-							else
-								JOptionPane.showMessageDialog(null, "La pieza no puede moverse a ese sitio");
-						}catch (ClassNotFoundException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (SQLException e) {
-							// TODO Auto-generated catch block
-							JOptionPane.showMessageDialog(null, "Ha ocurrido un error con la db");
 						}
-				
+					}
+					else{
+						//f=cp.dameFicha(cmbFicha.getSelectedItem().toString(),p.getNroPartida(),p.getJ2().getDni());
+						for (int i = 0; i < p.getTablero().size(); i++) {
+							if(p.getTablero().get(i).getNombre()==cmbFicha.getSelectedItem().toString() &&
+								p.getTablero().get(i).getDni()==p.getJ2().getDni()){
+								f=partida.getTablero().get(i);
+							}
+						}
+						
+					}
+					//valido que el movimiento fuese posible y si lo es invoco a realizar movimiento
+					if(f.validarMovimiento(Integer.parseInt(txtPosX.getText()), Integer.parseInt(txtPosY.getText()))){
+						//cp.realizarMovimiento(f, Integer.parseInt(txtPosX.getText()), Integer.parseInt(txtPosY.getText()));
+						f.setPosX(Integer.parseInt(txtPosX.getText()));
+						f.setPosY(Integer.parseInt(txtPosY.getText()));
+						JOptionPane.showMessageDialog(null, "El movimiento ha sido efectuado correctamente");
+						cambiarTurno();
+						listarPiezas();
 					}
 					else
-						JOptionPane.showMessageDialog(null, "Todos los campos deben estar completos");
+						JOptionPane.showMessageDialog(null, "La pieza no puede moverse a ese sitio");
 				}
+					else
+						JOptionPane.showMessageDialog(null, "Todos los campos deben estar completos");
+				
+			
 			}
 
 			//metodo que cambia el turno de la partida, falta actualizar en la DB
@@ -252,22 +256,22 @@ public class PartidaEnCurso extends JFrame {
 			}
 		}
 		//if que detecta a que jugador le toca y busca las piezas no comidas para el mismo
-		try{
-			if (this.partida.getTurno()==1){
-				this.lblJugadorTurno.setText(Integer.toString(this.partida.getJ1().getDni()));
-				piezasCombo=cp.dameFichasNoComidas(this.partida.getJ1().getDni(),this.partida.getNroPartida());
+
+		if (this.partida.getTurno()==1){
+			this.lblJugadorTurno.setText(Integer.toString(this.partida.getJ1().getDni()));
+			for (int i = 0; i < partida.getTablero().size(); i++) {
+				if(partida.getTablero().get(i).getDni()==partida.getJ1().getDni() && partida.getTablero().get(i).isEstado())
+					piezasCombo.add(partida.getTablero().get(i).getNombre().toString());
 			}
-			else {
-				this.lblJugadorTurno.setText(Integer.toString(this.partida.getJ2().getDni()));
-					piezasCombo=cp.dameFichasNoComidas(this.partida.getJ2().getDni(),this.partida.getNroPartida());
-			}		
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(null, "ha ocurrido un error cargando el comboBox con la db");
+		}
+		else {
+			this.lblJugadorTurno.setText(Integer.toString(this.partida.getJ2().getDni()));
+			for (int i = 0; i < partida.getTablero().size(); i++) {
+				if(partida.getTablero().get(i).getDni()==partida.getJ2().getDni() && partida.getTablero().get(i).isEstado())
+					piezasCombo.add(partida.getTablero().get(i).getNombre().toString());
+			}
 		}		
+
 		//se llena el comboBox una vez que se buscaron las piezas no comidas
 		@SuppressWarnings("rawtypes")
 		DefaultComboBoxModel mdlCombo= new DefaultComboBoxModel();
