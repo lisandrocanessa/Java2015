@@ -43,6 +43,7 @@ public class ControladorPartida {
 								else t.setNombre("t2");
 								t.setDni(p.getJ1().getDni());
 								t.setEstado(true);
+								t.setNroPartida(p.getNroPartida());
 								tablero.add(t);
 							}
 							if(x==2 || x==7){
@@ -52,6 +53,7 @@ public class ControladorPartida {
 								else c.setNombre("c2");
 								c.setDni(p.getJ1().getDni());
 								c.setEstado(true);
+								c.setNroPartida(p.getNroPartida());
 								tablero.add(c);
 							}
 							if(x==3 || x==6){
@@ -61,6 +63,7 @@ public class ControladorPartida {
 								else a.setNombre("a2");
 								a.setDni(p.getJ1().getDni());
 								a.setEstado(true);
+								a.setNroPartida(p.getNroPartida());
 								tablero.add(a);
 							}
 							if(x==4){
@@ -69,6 +72,7 @@ public class ControladorPartida {
 								q.setNombre("q");
 								q.setDni(p.getJ1().getDni());
 								q.setEstado(true);
+								q.setNroPartida(p.getNroPartida());
 								tablero.add(q);
 							}
 							if(x==5){
@@ -78,6 +82,7 @@ public class ControladorPartida {
 								r.setNombre("r");
 								r.setDni(p.getJ1().getDni());
 								r.setEstado(true);
+								r.setNroPartida(p.getNroPartida());
 								tablero.add(r);
 							}
 						}
@@ -89,6 +94,7 @@ public class ControladorPartida {
 							pe.setNombre("p"+Integer.toString(x));
 							pe.setDni(p.getJ1().getDni());
 							pe.setEstado(true);
+							pe.setNroPartida(p.getNroPartida());
 							tablero.add(pe);
 						}
 					}							
@@ -105,6 +111,7 @@ public class ControladorPartida {
 								else t.setNombre("t2");
 								t.setDni(p.getJ2().getDni());
 								t.setEstado(true);
+								t.setNroPartida(p.getNroPartida());
 								tablero.add(t);
 							}
 							if(x==2 || x==7){
@@ -114,6 +121,7 @@ public class ControladorPartida {
 								else c.setNombre("c2");
 								c.setDni(p.getJ2().getDni());
 								c.setEstado(true);
+								c.setNroPartida(p.getNroPartida());
 								tablero.add(c);
 							}
 							if(x==3 || x==6){
@@ -123,6 +131,7 @@ public class ControladorPartida {
 								else a.setNombre("a2");
 								a.setDni(p.getJ2().getDni());
 								a.setEstado(true);
+								a.setNroPartida(p.getNroPartida());
 								tablero.add(a);
 							}
 							if(x==4){
@@ -132,6 +141,7 @@ public class ControladorPartida {
 								r.setNombre("r");
 								r.setDni(p.getJ2().getDni());
 								r.setEstado(true);
+								r.setNroPartida(p.getNroPartida());
 								tablero.add(r);
 							}
 							if(x==5){
@@ -140,6 +150,7 @@ public class ControladorPartida {
 								q.setNombre("q");
 								q.setDni(p.getJ2().getDni());
 								q.setEstado(true);
+								q.setNroPartida(p.getNroPartida());
 								tablero.add(q);
 							}
 						}
@@ -151,6 +162,7 @@ public class ControladorPartida {
 							pe.setNombre("p"+Integer.toString(x));
 							pe.setDni(p.getJ2().getDni());
 							pe.setEstado(true);
+							pe.setNroPartida(p.getNroPartida());
 							tablero.add(pe);
 						}
 					}
@@ -168,11 +180,6 @@ public class ControladorPartida {
 		// TODO Auto-generated method stub
 		CatalogoFichas cf = new CatalogoFichas();
 		return cf.cargarTablero(p);
-	}
-
-	public void realizarMovimiento(Ficha f, int x, int y) throws ClassNotFoundException, SQLException {
-		CatalogoFichas cf=new CatalogoFichas();
-		cf.updateFicha(f,x,y);
 	}
 
 	public ArrayList<String> dameFichasNoComidas(int dni, int nroPartida) throws ClassNotFoundException, SQLException {
@@ -193,6 +200,23 @@ public class ControladorPartida {
 		CatalogoFichas cf = new CatalogoFichas();
 		cf.borrarFichas(p);
 		cp.borrarPartida(p);
+	}
+
+	// valida q no haya una ficha del mismo jugador en esa posicion
+	public boolean validarMovimiento(int x, int y, int dni, Partida partida) {
+		// TODO Auto-generated method stub
+		for (Ficha f : partida.getTablero()){
+			if  (f.getPosX() == x && f.getPosY() == y && f.getDni()==dni){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public void guardarPartidaYFichas(ArrayList<Ficha> fichas) throws ClassNotFoundException, SQLException {
+		// TODO Auto-generated method stub
+		CatalogoFichas cf=new CatalogoFichas();
+		cf.updateFichas(fichas);
 	}
 
 
