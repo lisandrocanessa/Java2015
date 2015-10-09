@@ -66,6 +66,7 @@ public class PartidaEnCurso extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public PartidaEnCurso(Partida p) {
 		setResizable(false);
 		setTitle("PARTIDA");
@@ -135,12 +136,35 @@ public class PartidaEnCurso extends JFrame {
 		
 		JButton btnRealizarMovimiento = new JButton("REALIZAR MOVIMIENTO");
 		btnRealizarMovimiento.addActionListener(new ActionListener() {
+			//evento que actualiza la posicion de la pieza si fue movida correctamente
 			public void actionPerformed(ActionEvent arg0) {
 				ControladorPartida cp = new ControladorPartida();
-				cp.realizarMovimiento(cmbFicha.getSelectedItem().toString(), cmbPosX.getSelectedIndex()+1, cmbPosY.getSelectedIndex()+1);
+				Ficha f = null;
+				//busco ficha con el metodo dame ficha mandandole el texto del comboBox
+				try{
+					if(p.getTurno()==1){
+						f=cp.dameFicha(cmbFicha.getSelectedItem().toString(),p.getNroPartida(),p.getJ1().getDni());
+					}
+					else{
+						f=cp.dameFicha(cmbFicha.getSelectedItem().toString(),p.getNroPartida(),p.getJ2().getDni());
+					}
+					//valido que el movimiento fuese posible y si lo es invoco a realizar movimiento
+					if(f.validarMovimiento(cmbPosX.getSelectedIndex()+1, cmbPosY.getSelectedIndex()+1)){
+						cp.realizarMovimiento(f, cmbPosX.getSelectedIndex()+1, cmbPosY.getSelectedIndex()+1);
+					}
+					listarPiezas();
+				}catch (ClassNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					JOptionPane.showMessageDialog(null, "Ha ocurrido un error con la db");
+				}
+				
 			}
+			
 		});
-		btnRealizarMovimiento.setBounds(203, 382, 149, 23);
+		btnRealizarMovimiento.setBounds(179, 382, 204, 29);
 		contentPane.add(btnRealizarMovimiento);
 		
 		JComboBox cmbPosY = new JComboBox();
@@ -151,7 +175,7 @@ public class PartidaEnCurso extends JFrame {
 		JComboBox cmbPosX = new JComboBox();
 		cmbPosX.setModel(new DefaultComboBoxModel(new String[] {"1", "2", "3", "4", "5", "6", "7", "8"}));
 		cmbPosX.setToolTipText("");
-		cmbPosX.setBounds(469, 337, 38, 20);
+		cmbPosX.setBounds(474, 337, 38, 20);
 		contentPane.add(cmbPosX);
 		
 		JLabel lblX = new JLabel("Fila:");
@@ -160,7 +184,8 @@ public class PartidaEnCurso extends JFrame {
 		contentPane.add(lblX);
 		
 		JLabel lblY = new JLabel("Columna:");
-		lblY.setBounds(412, 340, 47, 14);
+		lblY.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblY.setBounds(412, 332, 67, 29);
 		contentPane.add(lblY);
 		this.partida = p;
 		iniciarPartida();
@@ -180,12 +205,10 @@ public class PartidaEnCurso extends JFrame {
 		this.lblJugadorUno.setText(Integer.toString(this.getPartida().getJ1().getDni()));
 		this.lblJugadorDos.setText(Integer.toString(this.getPartida().getJ2().getDni()));
 		listarPiezas();
-		
-		
-		// falta llenar los combobox!!
 	}
 
 	@SuppressWarnings("unchecked")
+	//metodo que actualiza el form de la partida
 	private void listarPiezas(){
 		ControladorPartida cp=new ControladorPartida();
 		ArrayList<String> piezasCombo=new ArrayList<>();
@@ -197,30 +220,24 @@ public class PartidaEnCurso extends JFrame {
 				this.txtJugadorDos.append("  "+f.getNombre() + "     (" + f.getPosX() + ",   " + f.getPosY() + ")"+f.isEstado()+"\n");
 			}
 		}
-		if (this.partida.getTurno()==1){
-			this.lblJugadorTurno.setText(Integer.toString(this.partida.getJ1().getDni()));
-			try {
+		//if que detecta a que jugador le toca y busca las piezas no comidas para el mismo
+		try{
+			if (this.partida.getTurno()==1){
+				this.lblJugadorTurno.setText(Integer.toString(this.partida.getJ1().getDni()));
 				piezasCombo=cp.dameFichasNoComidas(this.partida.getJ1().getDni(),this.partida.getNroPartida());
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
-		}
-		else {
-			this.lblJugadorTurno.setText(Integer.toString(this.partida.getJ2().getDni()));
-			try {
-				piezasCombo=cp.dameFichasNoComidas(this.partida.getJ2().getDni(),this.partida.getNroPartida());
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+			else {
+				this.lblJugadorTurno.setText(Integer.toString(this.partida.getJ2().getDni()));
+					piezasCombo=cp.dameFichasNoComidas(this.partida.getJ2().getDni(),this.partida.getNroPartida());
+			}		
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null, "ha ocurrido un error cargando el comboBox con la db");
+		}		
+		//se llena el comboBox una vez que se buscaron las piezas no comidas
 		@SuppressWarnings("rawtypes")
 		DefaultComboBoxModel mdlCombo= new DefaultComboBoxModel();
 		cmbFicha.setModel(mdlCombo);
