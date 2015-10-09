@@ -6,6 +6,9 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import data.CatalogoFichas;
+
 import javax.swing.JLabel;
 
 import java.awt.Font;
@@ -258,7 +261,7 @@ public class PartidaEnCurso extends JFrame {
 				}
 				
 			}
-			//valido que el movimiento fuese posible y si lo es invoco a realizar movimiento
+			//valido que el movimiento fuese posible y si lo es efectúo el movimiento
 			if(f.validarMovimiento(Integer.parseInt(txtPosX.getText()), Integer.parseInt(txtPosY.getText()))
 					&& cp.validarMovimiento(Integer.parseInt(txtPosX.getText()), Integer.parseInt(txtPosY.getText()),f.getDni() ,this.partida)){
 				//cp.realizarMovimiento(f, Integer.parseInt(txtPosX.getText()), Integer.parseInt(txtPosY.getText()));
@@ -270,6 +273,15 @@ public class PartidaEnCurso extends JFrame {
 						objetivo.setPosX(0);
 						objetivo.setPosY(0);
 						objetivo.setEstado(false);
+						if (objetivo.getNombre().contains("r") && !objetivo.isEstado()){
+							JOptionPane.showMessageDialog(null, "Usted ha ganado: " + f.getDni()+ "!");
+							try {
+								cp.borrarFichasYPartida(p);
+								this.dispose();
+							} catch (ClassNotFoundException | SQLException e) {
+								JOptionPane.showMessageDialog(null, "Error en la base de datos ln279");
+							}
+						}
 					}
 				}
 				JOptionPane.showMessageDialog(null, "El movimiento ha sido efectuado correctamente");
